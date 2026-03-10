@@ -1,0 +1,1913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Geotab Marketplace — Asset Tracker Selector</title>
+<style>
+  :root {
+    --geotab-blue: #00538B;
+    --geotab-dark: #003A5C;
+    --geotab-light: #E8F4FA;
+    --geotab-accent: #0078C8;
+    --geotab-green: #2E8B57;
+    --geotab-orange: #E8751A;
+    --geotab-red: #C0392B;
+    --gray-50: #F9FAFB;
+    --gray-100: #F3F4F6;
+    --gray-200: #E5E7EB;
+    --gray-300: #D1D5DB;
+    --gray-400: #9CA3AF;
+    --gray-500: #6B7280;
+    --gray-600: #4B5563;
+    --gray-700: #374151;
+    --gray-800: #1F2937;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1);
+    --radius: 10px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: var(--gray-50);
+    color: var(--gray-800);
+    line-height: 1.5;
+  }
+
+  /* ── Header ── */
+  header {
+    background: linear-gradient(135deg, var(--geotab-dark) 0%, var(--geotab-blue) 50%, var(--geotab-accent) 100%);
+    color: #fff;
+    padding: 32px 24px 28px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.06) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  header h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 6px; }
+  header p { font-size: 15px; opacity: 0.85; max-width: 600px; margin: 0 auto; }
+  .geotab-logo {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.7;
+    margin-bottom: 10px;
+  }
+
+  /* ── Controls Bar ── */
+  .controls {
+    background: #fff;
+    border-bottom: 1px solid var(--gray-200);
+    padding: 16px 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: var(--shadow-sm);
+  }
+  .controls label {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--gray-500);
+    margin-right: -4px;
+  }
+  .filter-group {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .filter-btn {
+    padding: 6px 14px;
+    border: 1px solid var(--gray-300);
+    border-radius: 20px;
+    background: #fff;
+    font-size: 13px;
+    cursor: pointer;
+    color: var(--gray-600);
+    transition: all 0.15s;
+  }
+  .filter-btn:hover { border-color: var(--geotab-accent); color: var(--geotab-accent); }
+  .filter-btn.active {
+    background: var(--geotab-blue);
+    color: #fff;
+    border-color: var(--geotab-blue);
+  }
+
+  /* ── Product Grid ── */
+  .main-container { max-width: 1400px; margin: 0 auto; padding: 24px; }
+
+  .section-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--geotab-dark);
+    margin: 28px 0 14px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--geotab-blue);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-title .count {
+    background: var(--geotab-blue);
+    color: #fff;
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 600;
+  }
+
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  .product-card {
+    background: #fff;
+    border: 2px solid var(--gray-200);
+    border-radius: var(--radius);
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .product-card:hover { border-color: var(--geotab-accent); box-shadow: var(--shadow-md); transform: translateY(-2px); }
+  .product-card.selected { border-color: var(--geotab-blue); background: var(--geotab-light); }
+  .product-card .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+  }
+  .product-card h3 { font-size: 15px; font-weight: 700; color: var(--geotab-dark); line-height: 1.3; }
+  .product-card .brand { font-size: 12px; color: var(--gray-500); font-weight: 500; margin-bottom: 6px; }
+  .product-card .quick-specs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 8px;
+  }
+  .spec-pill {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 12px;
+    background: var(--gray-100);
+    color: var(--gray-600);
+    white-space: nowrap;
+  }
+  .spec-pill.highlight { background: #DBEAFE; color: #1E40AF; }
+  .spec-pill.green { background: #D1FAE5; color: #065F46; }
+  .spec-pill.orange { background: #FEF3C7; color: #92400E; }
+  .check-indicator {
+    width: 22px;
+    height: 22px;
+    border: 2px solid var(--gray-300);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.15s;
+    font-size: 12px;
+  }
+  .product-card.selected .check-indicator {
+    background: var(--geotab-blue);
+    border-color: var(--geotab-blue);
+    color: #fff;
+  }
+  .card-type-badge {
+    position: absolute;
+    top: -1px;
+    right: 14px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 2px 8px 3px;
+    border-radius: 0 0 6px 6px;
+  }
+  .badge-gps { background: var(--geotab-blue); color: #fff; }
+  .badge-solar { background: var(--geotab-orange); color: #fff; }
+  .badge-satellite { background: var(--geotab-dark); color: #fff; }
+  .badge-ble { background: var(--geotab-green); color: #fff; }
+  .badge-wired { background: var(--gray-600); color: #fff; }
+  .badge-hybrid { background: #7C3AED; color: #fff; }
+
+  /* ── Compare Bar ── */
+  .compare-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--geotab-dark);
+    color: #fff;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+    z-index: 200;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
+  }
+  .compare-bar.visible { transform: translateY(0); }
+  .compare-bar .selected-names { font-size: 14px; opacity: 0.9; }
+  .compare-bar .selected-names span { margin-right: 12px; }
+  .compare-btn {
+    background: #fff;
+    color: var(--geotab-dark);
+    border: none;
+    padding: 10px 28px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .compare-btn:hover { background: var(--geotab-light); transform: scale(1.03); }
+  .clear-btn {
+    background: transparent;
+    color: rgba(255,255,255,0.7);
+    border: 1px solid rgba(255,255,255,0.3);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    margin-left: 10px;
+  }
+  .clear-btn:hover { background: rgba(255,255,255,0.1); }
+
+  /* ── Comparison Modal ── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 300;
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    overflow-y: auto;
+    padding: 40px 20px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: #fff;
+    border-radius: 14px;
+    width: 100%;
+    max-width: 1200px;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+    animation: slideUp 0.3s ease;
+  }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 28px;
+    border-bottom: 1px solid var(--gray-200);
+  }
+  .modal-header h2 { font-size: 20px; font-weight: 700; color: var(--geotab-dark); }
+  .modal-close {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: var(--gray-100);
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gray-500);
+  }
+  .modal-close:hover { background: var(--gray-200); }
+
+  /* Dropdown selectors inside modal */
+  .modal-selectors {
+    display: flex;
+    gap: 12px;
+    padding: 16px 28px;
+    border-bottom: 1px solid var(--gray-200);
+    background: var(--gray-50);
+    flex-wrap: wrap;
+  }
+  .selector-slot {
+    flex: 1;
+    min-width: 200px;
+  }
+  .selector-slot label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--gray-400);
+    margin-bottom: 4px;
+  }
+  .selector-slot select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 2px solid var(--gray-200);
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    background: #fff;
+    color: var(--gray-800);
+    cursor: pointer;
+    appearance: auto;
+  }
+  .selector-slot select:focus { border-color: var(--geotab-accent); outline: none; }
+
+  /* Comparison table */
+  .comparison-body { padding: 0; overflow-x: auto; }
+  .modal-cta {
+    text-align: center;
+    padding: 24px 28px 28px;
+    border-top: 1px solid var(--gray-200);
+    background: var(--gray-50);
+    border-radius: 0 0 14px 14px;
+  }
+  .modal-cta p {
+    font-size: 14px;
+    color: var(--gray-500);
+    margin-bottom: 12px;
+  }
+  .cta-btn {
+    display: inline-block;
+    background: var(--geotab-blue);
+    color: #fff;
+    text-decoration: none;
+    padding: 12px 28px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    transition: all 0.15s;
+  }
+  .cta-btn:hover { background: var(--geotab-dark); transform: scale(1.03); }
+  .cta-btn { cursor: pointer; border: none; }
+
+  /* ── Contact Form Modal ── */
+  .contact-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+  }
+  .contact-overlay.open { display: flex; }
+  .contact-modal {
+    background: #fff;
+    border-radius: 14px;
+    width: 100%;
+    max-width: 480px;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+    overflow: hidden;
+    animation: modalIn 0.25s ease;
+  }
+  .contact-header {
+    background: linear-gradient(135deg, var(--geotab-dark), var(--geotab-blue));
+    color: #fff;
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .contact-header h3 { font-size: 18px; font-weight: 700; }
+  .contact-close {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.15s;
+  }
+  .contact-close:hover { opacity: 1; }
+  .contact-form {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .contact-form label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-700);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .contact-form input,
+  .contact-form textarea {
+    padding: 10px 12px;
+    border: 1.5px solid var(--gray-300);
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--gray-800);
+    transition: border-color 0.15s;
+    outline: none;
+  }
+  .contact-form input:focus,
+  .contact-form textarea:focus { border-color: var(--geotab-accent); }
+  .contact-form textarea { resize: vertical; min-height: 80px; }
+  .contact-form .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .contact-submit {
+    background: var(--geotab-blue);
+    color: #fff;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-top: 4px;
+  }
+  .contact-submit:hover { background: var(--geotab-dark); transform: scale(1.02); }
+  .contact-note {
+    font-size: 12px;
+    color: var(--gray-400);
+    text-align: center;
+  }
+  .contact-success {
+    text-align: center;
+    padding: 40px 24px;
+  }
+  .contact-success svg { margin-bottom: 16px; }
+  .contact-success h4 {
+    font-size: 18px;
+    color: var(--gray-800);
+    margin-bottom: 8px;
+  }
+  .contact-success p {
+    font-size: 14px;
+    color: var(--gray-500);
+    margin-bottom: 20px;
+  }
+  .contact-done-btn {
+    background: var(--geotab-blue);
+    color: #fff;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .contact-done-btn:hover { background: var(--geotab-dark); }
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .comparison-table th, .comparison-table td {
+    padding: 10px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--gray-100);
+    vertical-align: top;
+  }
+  .comparison-table th:first-child, .comparison-table td:first-child {
+    position: sticky;
+    left: 0;
+    background: #fff;
+    z-index: 2;
+    min-width: 170px;
+    font-weight: 600;
+    color: var(--gray-600);
+    border-right: 2px solid var(--gray-200);
+  }
+  .comparison-table th {
+    background: var(--geotab-dark);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 14px 16px;
+    position: sticky;
+    top: 0;
+    z-index: 3;
+  }
+  .comparison-table th:first-child {
+    background: var(--geotab-dark);
+    color: #fff;
+    z-index: 4;
+  }
+  .comparison-table td { min-width: 200px; }
+  .comparison-table tbody tr:hover td { background: var(--geotab-light); }
+  .comparison-table tbody tr:hover td:first-child { background: var(--geotab-light); }
+  .comparison-table .section-row td {
+    background: var(--gray-100);
+    font-weight: 700;
+    color: var(--geotab-dark);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 8px 16px;
+    border-bottom: 2px solid var(--gray-200);
+  }
+  .val-yes { color: var(--geotab-green); font-weight: 600; }
+  .val-no { color: var(--gray-400); }
+  .val-highlight { color: var(--geotab-blue); font-weight: 600; }
+  .val-best { background: #D1FAE5; border-radius: 4px; padding: 2px 6px; color: #065F46; font-weight: 600; }
+  .val-warn { color: var(--geotab-orange); font-weight: 500; }
+
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    header h1 { font-size: 22px; }
+    .product-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .product-card { padding: 12px; }
+    .compare-bar { flex-direction: column; gap: 10px; text-align: center; }
+    .modal-selectors { flex-direction: column; }
+    .selector-slot { min-width: 100%; }
+  }
+  @media (max-width: 480px) {
+    .product-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ── Print styles ── */
+  @media print {
+    header, .controls, .compare-bar { display: none; }
+    .modal-overlay { position: static; display: flex !important; background: none; padding: 0; }
+    .modal { box-shadow: none; max-width: 100%; }
+    .comparison-table th, .comparison-table td { font-size: 11px; padding: 6px 8px; }
+  }
+
+  /* Helper */
+  .hidden { display: none !important; }
+  .info-banner {
+    background: #DBEAFE;
+    border: 1px solid #93C5FD;
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    font-size: 13px;
+    color: #1E40AF;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .info-banner svg { flex-shrink: 0; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="geotab-logo">Geotab Marketplace</div>
+  <h1>Asset Tracker Selector</h1>
+  <p>Compare "Order Now" asset tracking solutions side-by-side. Select up to 4 products to compare specifications, features, and capabilities.</p>
+</header>
+
+<div class="controls">
+  <label>Filter:</label>
+  <div class="filter-group" id="filterGroup">
+    <button class="filter-btn active" data-filter="all">All Products</button>
+    <button class="filter-btn" data-filter="gps">GPS Cellular</button>
+    <button class="filter-btn" data-filter="solar">Solar Powered</button>
+    <button class="filter-btn" data-filter="satellite">Satellite</button>
+    <button class="filter-btn" data-filter="ble">BLE / Tags</button>
+    <button class="filter-btn" data-filter="compact">Compact</button>
+    <button class="filter-btn" data-filter="indoor">Indoor/Outdoor</button>
+  </div>
+</div>
+
+<div class="main-container">
+  <div class="info-banner">
+    <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="#1E40AF" stroke-width="2"/><path d="M12 7v1m0 4v5" stroke="#1E40AF" stroke-width="2" stroke-linecap="round"/></svg>
+    Click on product cards to select them, then press <strong>&nbsp;Compare Selected&nbsp;</strong> to view a detailed side-by-side comparison. You can also swap products using the dropdown menus inside the comparison view.
+  </div>
+
+  <div class="section-title">GPS / Cellular Asset Trackers <span class="count" id="gpsCount">0</span></div>
+  <div class="product-grid" id="gpsGrid"></div>
+
+  <div class="section-title">Solar-Powered Trackers <span class="count" id="solarCount">0</span></div>
+  <div class="product-grid" id="solarGrid"></div>
+
+  <div class="section-title">Satellite Trackers <span class="count" id="satCount">0</span></div>
+  <div class="product-grid" id="satGrid"></div>
+
+  <div class="section-title">BLE Tags &amp; Sensor Ecosystem <span class="count" id="bleCount">0</span></div>
+  <div class="product-grid" id="bleGrid"></div>
+</div>
+
+<!-- Compare Bar -->
+<div class="compare-bar" id="compareBar">
+  <div>
+    <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;opacity:0.7;margin-bottom:2px;">Selected for Comparison</div>
+    <div class="selected-names" id="selectedNames"></div>
+  </div>
+  <div style="display:flex;align-items:center;">
+    <button class="compare-btn" id="compareBtn" onclick="openComparison()">Compare Selected</button>
+    <button class="clear-btn" onclick="clearSelection()">Clear All</button>
+  </div>
+</div>
+
+<!-- Comparison Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Side-by-Side Comparison</h2>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-selectors" id="modalSelectors"></div>
+    <div class="comparison-body">
+      <table class="comparison-table" id="comparisonTable"></table>
+    </div>
+    <div class="modal-cta">
+      <p>Need help choosing the right solution for your fleet?</p>
+      <button class="cta-btn" onclick="openContactForm()">Contact us to speak to a Geotab representative</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── PRODUCT DATA ──
+const products = [
+  {
+    id: "go-anywhere",
+    name: "GO Anywhere",
+    brand: "Geotab",
+    category: "gps",
+    tags: ["gps"],
+    badge: "GPS",
+    badgeClass: "badge-gps",
+    pills: ["LTE-M", "IP68/IP69K", "10yr Battery", "Wire-Free"],
+    pillClasses: ["highlight", "", "green", ""],
+    connectivity: "LTE-M (CAT-M1)",
+    gps: "GPS + Galileo (2.0m CEP)",
+    batteryLife: "Up to 10 years (1 ping/day); 3-5 yrs typical (hourly)",
+    batteryType: "3x AA lithium iron disulfide (non-removable)",
+    ipRating: "IP68 + IP69K",
+    operatingTemp: "-40\u00B0C to +60\u00B0C",
+    dimensions: "111 x 71 x 29.5 mm",
+    weight: "166.7 g (0.37 lbs)",
+    ble: "No",
+    wifi: "No",
+    satellite: "No",
+    indoor: "No",
+    sensors: "State of Charge indicator; 100-day low battery alert",
+    installation: "Wire-free: screw, magnet, or zip tie",
+    powerSource: "Battery only",
+    mygeotabIntegration: "Full native integration",
+    otaUpdates: "Yes",
+    regions: "USA, Canada, Europe, UK, Australia & NZ",
+    certifications: "UL 94 V-0 housing",
+    keyDifferentiator: "Geotab's own branded tracker with deepest MyGeotab integration and OTA firmware updates",
+    useCases: "Non-powered trailers, construction equipment, generators, containers, seasonal assets"
+  },
+  {
+    id: "go-anywhere-plus",
+    name: "GO Anywhere Plus",
+    brand: "Geotab",
+    category: "gps",
+    tags: ["gps","satellite"],
+    badge: "SATELLITE",
+    badgeClass: "badge-satellite",
+    pills: ["LTE CAT-1", "Starlink D2C", "IP67/IP69K", "Wired + Battery"],
+    pillClasses: ["highlight", "orange", "", ""],
+    connectivity: "4G LTE CAT-1 + Starlink Direct to Cell satellite + BLE",
+    gps: "Precise GPS tracking",
+    batteryLife: "3-5 years (backup battery mode, config-dependent)",
+    batteryType: "Wired (3-wire) + field-replaceable backup battery",
+    ipRating: "IP67 / IP69K",
+    operatingTemp: "-40\u00B0C to +85\u00B0C",
+    dimensions: "Not yet published (Q2 2026 launch)",
+    weight: "Not yet published",
+    ble: "Yes (BLE expansion port)",
+    wifi: "No",
+    satellite: "Yes \u2014 Starlink Direct to Cell (global coverage)",
+    indoor: "No",
+    sensors: "Engine hours monitoring; ignition status detection; inferred hubometer readings; geofencing & alerts",
+    installation: "Wired (3-wire: power, ground, ignition); also supports screws, bolts, magnets, cable ties",
+    powerSource: "Wired + field-replaceable backup battery",
+    mygeotabIntegration: "Full native integration",
+    otaUpdates: "Yes",
+    regions: "USA, Canada (Q2 2026); global rollout to follow",
+    certifications: "NDAA compliant; TAA compliant; FIPS 140-3; FedRAMP authorized",
+    keyDifferentiator: "First commercial Geotab IoT device with Starlink Direct to Cell satellite; eliminates need for separate satellite hardware; hybrid wired + battery backup; works in cellular dead zones",
+    useCases: "High-value mixed fleets, trailers, heavy equipment, generators, remote jobsites, theft recovery, construction"
+  },
+  {
+    id: "oyster3",
+    name: "Oyster3",
+    brand: "Digital Matter / BlueArrow",
+    category: "gps",
+    tags: ["gps"],
+    badge: "GPS",
+    badgeClass: "badge-gps",
+    pills: ["LTE-M/NB-IoT", "IP68/IK07", "10+ yr Battery", "5-Constellation"],
+    pillClasses: ["highlight", "", "green", "orange"],
+    connectivity: "LTE-M / NB-IoT",
+    gps: "Sony CXD5605 — GPS, GLONASS, Galileo, BeiDou, QZSS",
+    batteryLife: "10+ years (1 ping/day)",
+    batteryType: "3x AA lithium (replaceable)",
+    ipRating: "IP68 + IK07",
+    operatingTemp: "-30\u00B0C to +60\u00B0C",
+    dimensions: "108 x 86 x 31 mm",
+    weight: "161 g (5.68 oz)",
+    ble: "No",
+    wifi: "No",
+    satellite: "No",
+    indoor: "No",
+    sensors: "3D accelerometer (adaptive tracking, accident detection)",
+    installation: "Wire-free: screw, cable tie, bolt",
+    powerSource: "Battery only (3.3-16V DC optional)",
+    mygeotabIntegration: "Full: Map, Rules & Alerts, Dashboard",
+    otaUpdates: "Yes",
+    regions: "USA, Canada",
+    certifications: "AES-256 encryption",
+    keyDifferentiator: "5-constellation GPS with Sony chipset; fastest cold-start acquisition in Digital Matter lineup",
+    useCases: "Trailers, containers, skip bins, equipment, vehicles"
+  },
+  {
+    id: "remora3",
+    name: "Remora3",
+    brand: "Digital Matter / BlueArrow",
+    category: "gps",
+    tags: ["gps","ble"],
+    badge: "GPS",
+    badgeClass: "badge-gps",
+    pills: ["LTE-M/NB-IoT", "IP68/IK07", "20yr Battery", "BLE 5.2 Gateway"],
+    pillClasses: ["highlight", "", "green", "orange"],
+    connectivity: "LTE-M / NB-IoT + Bluetooth 5.2 Gateway",
+    gps: "Sony CXD5612 — GPS, GLONASS, Galileo, BeiDou (~2m CEP)",
+    batteryLife: "Up to 20 years (1x daily); ~10 yrs hourly",
+    batteryType: "2x D-Cell LTC (user-replaceable)",
+    ipRating: "IP68 + IK07",
+    operatingTemp: "-30\u00B0C to +60\u00B0C",
+    dimensions: "222 x 91 x 41 mm",
+    weight: "460 g",
+    ble: "Bluetooth 5.2 Gateway",
+    wifi: "No",
+    satellite: "No",
+    indoor: "No",
+    sensors: "3D accelerometer; magnetic tamper detection; rotation/tip detection",
+    installation: "Screws, bolts, cable ties, rivets; covert options",
+    powerSource: "Battery only",
+    mygeotabIntegration: "Full",
+    otaUpdates: "Yes",
+    regions: "USA, Canada",
+    certifications: "N/A",
+    keyDifferentiator: "Longest-life battery tracker on Marketplace (20 yrs); BLE 5.2 gateway for tagged asset management; D-cell LTC for extreme temps",
+    useCases: "Long-life deployments, high-value equipment, remote/challenging environments"
+  },
+  {
+    id: "yabby3",
+    name: "Yabby3",
+    brand: "Digital Matter / BlueArrow",
+    category: "gps",
+    tags: ["gps","compact"],
+    badge: "GPS",
+    badgeClass: "badge-gps",
+    pills: ["LTE-M/NB-IoT", "IP68", "10+ yr Battery", "Ultra-Compact"],
+    pillClasses: ["highlight", "", "green", "orange"],
+    connectivity: "LTE-M / NB-IoT",
+    gps: "Sony CXD5605 — GPS, GLONASS, Galileo, QZSS",
+    batteryLife: "10+ years (1x daily); ~2 yrs movement-based",
+    batteryType: "3x AAA lithium (user-replaceable)",
+    ipRating: "IP68 + IK06",
+    operatingTemp: "-30\u00B0C to +60\u00B0C",
+    dimensions: "85 x 63 x 24 mm",
+    weight: "~80 g (160 g with batteries)",
+    ble: "No",
+    wifi: "No",
+    satellite: "No",
+    indoor: "No",
+    sensors: "3D accelerometer (adaptive tracking, accident detection)",
+    installation: "Wire-free; compact mounting for tools, cargo, pallets",
+    powerSource: "Battery only",
+    mygeotabIntegration: "Full: Map, Rules & Alerts, Dashboard",
+    otaUpdates: "Yes",
+    regions: "USA, Canada",
+    certifications: "N/A",
+    keyDifferentiator: "Smallest & lightest long-life GPS tracker on the Marketplace; uses AAA batteries for ultra-compact form",
+    useCases: "Tools, inventory pallets, cargo, returnable assets, light equipment"
+  },
+  {
+    id: "oyster-edge",
+    name: "Oyster Edge",
+    brand: "Digital Matter / BlueArrow",
+    category: "gps",
+    tags: ["gps","indoor","ble"],
+    badge: "HYBRID",
+    badgeClass: "badge-hybrid",
+    pills: ["LTE-M/NB-IoT", "IP68/IK07", "WiFi Indoor", "BLE 5.2 Gateway"],
+    pillClasses: ["highlight", "", "orange", "orange"],
+    connectivity: "LTE-M / NB-IoT + Bluetooth 5.2 Gateway",
+    gps: "Semtech LR1110 — GPS + BeiDou; GNSS assistance",
+    batteryLife: "10 years (daily); 7 yrs movement; 4.5 yrs hourly",
+    batteryType: "3x AA lithium (user-replaceable)",
+    ipRating: "IP68 + IK07",
+    operatingTemp: "-30\u00B0C to +60\u00B0C",
+    dimensions: "108 x 86 x 30 mm",
+    weight: "163 g with batteries",
+    ble: "Bluetooth 5.2 Gateway",
+    wifi: "WiFi AP scanning (10-100m indoor)",
+    satellite: "No",
+    indoor: "Yes — WiFi AP scanning + Cell Tower fallback",
+    sensors: "3D accelerometer; impact detection; axis angle; tip detection; rotation counting",
+    installation: "Wire-free: screw, cable tie, bolt",
+    powerSource: "Battery only",
+    mygeotabIntegration: "Full",
+    otaUpdates: "Yes",
+    regions: "USA, Canada",
+    certifications: "N/A",
+    keyDifferentiator: "WiFi scanning for indoor positioning; BLE 5.2 gateway relays data from nearby BLE tags; seamless indoor/outdoor transition",
+    useCases: "Indoor/outdoor assets, BLE tagged asset management, warehousing"
+  },
+  {
+    id: "yabby-edge",
+    name: "Yabby Edge",
+    brand: "Digital Matter / BlueArrow",
+    category: "gps",
+    tags: ["gps","compact","indoor"],
+    badge: "HYBRID",
+    badgeClass: "badge-hybrid",
+    pills: ["LTE-M/NB-IoT", "IP68", "WiFi Indoor", "Compact"],
+    pillClasses: ["highlight", "", "orange", ""],
+    connectivity: "LTE-M / NB-IoT",
+    gps: "Semtech LR1110 — GPS + BeiDou",
+    batteryLife: "Not specified (ultra-low sleep <10\u00B5A)",
+    batteryType: "Off-the-shelf with LTC options",
+    ipRating: "IP68",
+    operatingTemp: "-20\u00B0C to +60\u00B0C",
+    dimensions: "85 x 63 x 24 mm",
+    weight: "82 g",
+    ble: "No",
+    wifi: "WiFi AP scanning (indoor)",
+    satellite: "No",
+    indoor: "Yes — WiFi AP scanning + Cell Tower fallback",
+    sensors: "3D accelerometer; adaptive tracking; accident detection",
+    installation: "Wire-free; compact",
+    powerSource: "Battery only",
+    mygeotabIntegration: "Full",
+    otaUpdates: "Yes",
+    regions: "USA, Canada",
+    certifications: "N/A",
+    keyDifferentiator: "Compact Yabby form factor with multi-technology indoor/outdoor location (GNSS + WiFi + Cell)",
+    useCases: "Compact assets, indoor/outdoor mixed environments, cargo, pallets"
+  },
+  {
+    id: "barra-edge",
+    name: "Barra Edge",
+    brand: "Digital Matter / BlueArrow",
+    category: "gps",
+    tags: ["gps","compact","indoor"],
+    badge: "HYBRID",
+    badgeClass: "badge-hybrid",
+    pills: ["LTE-M/NB-IoT", "IP68/IK07", "Ultra-Slim", "WiFi Indoor"],
+    pillClasses: ["highlight", "", "orange", ""],
+    connectivity: "LTE-M / NB-IoT",
+    gps: "Semtech LR1110 — GPS + BeiDou; cloud-based solving",
+    batteryLife: "10 years (daily); 5 yrs movement; 3 yrs hourly",
+    batteryType: "2x AA lithium (user-replaceable)",
+    ipRating: "IP68 + IK07",
+    operatingTemp: "-30\u00B0C to +60\u00B0C",
+    dimensions: "149 x 51 x 21 mm",
+    weight: "104 g with batteries",
+    ble: "No",
+    wifi: "WiFi AP scanning (10-100m indoor)",
+    satellite: "No",
+    indoor: "Yes — WiFi AP scanning + Cell Tower fallback",
+    sensors: "3D accelerometer; magnetic activation switch; magnetic tamper detection",
+    installation: "Wire-free; ultra-slim covert installation",
+    powerSource: "Battery only",
+    mygeotabIntegration: "Full",
+    otaUpdates: "Yes",
+    regions: "USA, Canada",
+    certifications: "AES-256 encryption",
+    keyDifferentiator: "Ultra-slim profile (21mm thick) for narrow surfaces; magnetic switch activation and tamper detection; lowest profile in Digital Matter lineup",
+    useCases: "Covert installation on thin assets, field services, transportation & logistics"
+  },
+  {
+    id: "g70",
+    name: "G70",
+    brand: "Digital Matter / BlueArrow",
+    category: "gps",
+    tags: ["gps"],
+    badge: "WIRED",
+    badgeClass: "badge-wired",
+    pills: ["LTE-M/NB-IoT", "IP68", "Wired 8-36V", "3 Digital Inputs"],
+    pillClasses: ["highlight", "", "", "orange"],
+    connectivity: "LTE-M / NB-IoT",
+    gps: "u-Blox EVA-M8Q — GPS, GLONASS, Galileo, BeiDou (-168 dBm sensitivity)",
+    batteryLife: "1100 mAh backup battery (for power loss)",
+    batteryType: "Wired (8-36V DC) + 1100 mAh Li-ion backup",
+    ipRating: "IP68",
+    operatingTemp: "-30\u00B0C to +60\u00B0C",
+    dimensions: "125 x 80 x 25 mm",
+    weight: "Not specified",
+    ble: "No",
+    wifi: "No",
+    satellite: "No",
+    indoor: "No",
+    sensors: "3D accelerometer; PTO monitoring; hours monitoring; battery life monitoring",
+    installation: "Hard-wired with anti-tamper backup battery",
+    powerSource: "Wired (8-36V DC) + backup battery",
+    mygeotabIntegration: "Full",
+    otaUpdates: "Yes",
+    regions: "USA, Canada",
+    certifications: "N/A",
+    keyDifferentiator: "Only wired tracker in BlueArrow lineup; -168 dBm GPS sensitivity (most sensitive); PTO and engine hours via 3 digital inputs",
+    useCases: "Powered vehicles and equipment, mixed fleet wired tracking, PTO-enabled machinery"
+  },
+  {
+    id: "bemini",
+    name: "BeMini",
+    brand: "BeWhere",
+    category: "gps",
+    tags: ["gps","compact"],
+    badge: "GPS",
+    badgeClass: "badge-gps",
+    pills: ["LTE-M", "IP67", "USB Rechargeable", "Smallest Tracker"],
+    pillClasses: ["highlight", "", "", "orange"],
+    connectivity: "LTE-M (CAT-M1/NB1) + BLE 5.2 + WiFi 2.4GHz",
+    gps: "GPS, BeiDou, Galileo, GLONASS, QZSS",
+    batteryLife: "500 GPS pings / 1,500 WiFi pings per charge",
+    batteryType: "Rechargeable via mini-USB",
+    ipRating: "IP67",
+    operatingTemp: "Not specified",
+    dimensions: "57 x 36 x 20 mm (Tic-Tac box size)",
+    weight: "50 g",
+    ble: "BLE 5.2",
+    wifi: "WiFi 2.4 GHz micro-positioning",
+    satellite: "No",
+    indoor: "Yes — WiFi micro-positioning",
+    sensors: "Temperature, humidity, air pressure, light, accelerometer",
+    installation: "Attach anywhere; optional wired harness (6-55V)",
+    powerSource: "USB rechargeable; optional 6-55V wired harness",
+    mygeotabIntegration: "Full (Base or GO mobile plan)",
+    otaUpdates: "Not specified",
+    regions: "USA, Canada",
+    certifications: "CE, PTCRB, FCC/IC",
+    keyDifferentiator: "Smallest and lightest tracker (50g, Tic-Tac size); richest onboard sensor suite (temp/humidity/pressure/light); USB rechargeable; WiFi indoor positioning",
+    useCases: "Packages, temperature-sensitive goods, forklifts, light towers, trailers, small/medium tools"
+  },
+  {
+    id: "magtrack-pro",
+    name: "MagTrack PRO",
+    brand: "Matrix iQ",
+    category: "gps",
+    tags: ["gps"],
+    badge: "GPS",
+    badgeClass: "badge-gps",
+    pills: ["Cellular+LoRa+Sat", "Thatcham S7", "5yr Battery", "Magnetic Mount"],
+    pillClasses: ["highlight", "orange", "green", ""],
+    connectivity: "Cellular + Satellite + LoRa (multi-network)",
+    gps: "GPS with Cell-ID fallback",
+    batteryLife: "Up to 5 years (rechargeable)",
+    batteryType: "Rechargeable",
+    ipRating: "Rugged waterproof (rating not disclosed)",
+    operatingTemp: "Not specified",
+    dimensions: "Not disclosed",
+    weight: "Not disclosed",
+    ble: "No",
+    wifi: "No",
+    satellite: "Yes (multi-network with satellite backup)",
+    indoor: "No",
+    sensors: "Motion and tamper alerts; light sensors",
+    installation: "Discreet magnetic mounting; concealed placement",
+    powerSource: "Rechargeable battery",
+    mygeotabIntegration: "Full",
+    otaUpdates: "Not specified",
+    regions: "Global (Africa, Asia, Australia/NZ, Canada, Europe, Middle East, UK, USA)",
+    certifications: "Thatcham S7 certified (insurance-grade theft recovery)",
+    keyDifferentiator: "Only Thatcham S7-certified tracker on Marketplace; multi-network (satellite + cellular + LoRa) for maximum coverage; discreet magnetic design; 1-hour national recovery SLA (UK)",
+    useCases: "Agricultural machinery, construction equipment, trailers, power units, high-theft-risk assets"
+  },
+  {
+    id: "tag-iq-card",
+    name: "Tag IQ — Card",
+    brand: "Matrix iQ",
+    category: "gps",
+    tags: ["gps","compact"],
+    badge: "GPS",
+    badgeClass: "badge-gps",
+    pills: ["Cellular", "Credit-Card Size", "QR Setup"],
+    pillClasses: ["highlight", "orange", ""],
+    connectivity: "Cellular (iOS & Android app)",
+    gps: "Yes (updates every minute)",
+    batteryLife: "Not disclosed",
+    batteryType: "Not disclosed",
+    ipRating: "Not disclosed",
+    operatingTemp: "Not specified",
+    dimensions: "Credit card / business card form factor",
+    weight: "Not disclosed",
+    ble: "No",
+    wifi: "No",
+    satellite: "No",
+    indoor: "No",
+    sensors: "None disclosed",
+    installation: "QR code quick-connect setup",
+    powerSource: "Battery",
+    mygeotabIntegration: "Full (iOS & Android app + MyGeotab)",
+    otaUpdates: "Not specified",
+    regions: "Global (Africa, Asia, Australia/NZ, Canada, Europe, Middle East, UK, USA)",
+    certifications: "Encrypted location data",
+    keyDifferentiator: "Credit-card form factor; no per-device fees; unlimited tags and users per account; QR code quick setup",
+    useCases: "Personal valuables, portable tools, lightweight asset tagging"
+  },
+  // Solar-Powered
+  {
+    id: "solarnet",
+    name: "SolarNet",
+    brand: "Phillips Connect",
+    category: "solar",
+    tags: ["solar"],
+    badge: "SOLAR",
+    badgeClass: "badge-solar",
+    pills: ["LTE Cat 1", "IP67", "Solar 10yr", "Cargo Camera (8000)"],
+    pillClasses: ["highlight", "", "green", "orange"],
+    connectivity: "LTE Cat 1 + 3G UMTS + BLE 4.2",
+    gps: "Integrated high-sensitivity GPS antenna",
+    batteryLife: "10 years on solar power",
+    batteryType: "4x 18650 Li-ion (36 Wh) + integrated solar panel",
+    ipRating: "IP67",
+    operatingTemp: "Not specified",
+    dimensions: "316 x 75 x 37 mm",
+    weight: "0.93 lbs (420 g)",
+    ble: "BLE 4.2",
+    wifi: "No",
+    satellite: "No",
+    indoor: "No",
+    sensors: "SolarNet 8000: built-in cargo camera, expanded TPMS support",
+    installation: "~15 min; solar-only or hard-wired option",
+    powerSource: "Solar + 7-way hard-wire harness (optional)",
+    mygeotabIntegration: "Full",
+    otaUpdates: "Not specified",
+    regions: "USA, Canada",
+    certifications: "FCC, PTCRB",
+    keyDifferentiator: "Industry-leading 10-year solar battery; SolarNet 8000 adds integrated cargo camera and TPMS; deep sensor ecosystem (PSI, ConMet, TSE, SKF, Compology, etc.)",
+    useCases: "Dry trailers, chassis, containers, Class 8, construction equipment, boats"
+  },
+  {
+    id: "stealthnet",
+    name: "StealthNet",
+    brand: "Phillips Connect",
+    category: "solar",
+    tags: ["solar"],
+    badge: "SOLAR",
+    badgeClass: "badge-solar",
+    pills: ["LTE Cat 1", "IP67", "Covert Design", "-162 dBm GPS"],
+    pillClasses: ["highlight", "", "orange", ""],
+    connectivity: "LTE Cat 1 + BLE 4.2",
+    gps: "56 channels; -162 dBm tracking / -148 dBm acquisition; 2.5m CEP",
+    batteryLife: "6-9+ months (no solar; stationary fully charged)",
+    batteryType: "4x 18650 Li-ion (36 Wh)",
+    ipRating: "IP67",
+    operatingTemp: "Not specified",
+    dimensions: "206 x 79 x 43 mm",
+    weight: "0.93 lbs (420 g)",
+    ble: "BLE 4.2",
+    wifi: "No",
+    satellite: "No",
+    indoor: "No",
+    sensors: "Compatible with Phillips Connect sensor ecosystem",
+    installation: "~10 min; covert/hidden placement",
+    powerSource: "Battery (10-32V DC wired option via harness)",
+    mygeotabIntegration: "Full",
+    otaUpdates: "Not specified",
+    regions: "USA, Canada",
+    certifications: "N/A",
+    keyDifferentiator: "Covert design for hidden placement; ultra-sensitive -162 dBm GPS tracking; works with full Phillips Connect sensor ecosystem",
+    useCases: "Covert trailer tracking, theft deterrence, assets without constant power"
+  },
+  {
+    id: "ct-1000",
+    name: "CT 1000",
+    brand: "VIACHAIN / ORBCOMM",
+    category: "solar",
+    tags: ["solar"],
+    badge: "SOLAR",
+    badgeClass: "badge-solar",
+    pills: ["4G LTE Global", "IP67/IP69K", "ATEX Zone 2", "1-Min Install"],
+    pillClasses: ["highlight", "", "orange", "green"],
+    connectivity: "4G LTE + 3G/2G fallback + BLE 5",
+    gps: "GPS, GLONASS, BeiDou, Galileo, QZSS (<10m CEP aided)",
+    batteryLife: "Solar-powered; operates 3 months at 75% without sun",
+    batteryType: "Rechargeable 3.6V Li-ion + integrated solar panel",
+    ipRating: "IP67 + IP69K",
+    operatingTemp: "Not specified",
+    dimensions: "Not disclosed",
+    weight: "Not disclosed",
+    ble: "Bluetooth 5",
+    wifi: "No",
+    satellite: "No",
+    indoor: "No",
+    sensors: "BLE sensors; wired sensors via I/Os",
+    installation: "1 minute install/removal",
+    powerSource: "Solar + rechargeable Li-ion",
+    mygeotabIntegration: "Full",
+    otaUpdates: "Yes",
+    regions: "Global (USA, Canada, Europe, UK, 180 countries)",
+    certifications: "CE Mark; ATEX Zone 2 certified",
+    keyDifferentiator: "ATEX Zone 2 certified for hazardous environments; global SIM with 565 networks in 180 countries; fastest install (1 minute)",
+    useCases: "Intermodal containers, dry trailers, maritime, hazardous environments"
+  },
+  {
+    id: "gt-1220",
+    name: "GT 1220",
+    brand: "VIACHAIN / ORBCOMM",
+    category: "solar",
+    tags: ["solar"],
+    badge: "SOLAR",
+    badgeClass: "badge-solar",
+    pills: ["4G LTE", "IP67", "MIL-STD-810G", "10+ yr Solar"],
+    pillClasses: ["highlight", "", "orange", "green"],
+    connectivity: "4G LTE + optional satellite backup + BLE (dual antennas)",
+    gps: "GPS with breadcrumb trail; real-time positioning",
+    batteryLife: "10+ years maintenance-free (solar)",
+    batteryType: "Solar-powered; 20x better charging than GT 1100",
+    ipRating: "IP67",
+    operatingTemp: "-40\u00B0C to +70\u00B0C (battery)",
+    dimensions: "Not disclosed",
+    weight: "Not disclosed",
+    ble: "BLE (dual integrated antennas)",
+    wifi: "No",
+    satellite: "Optional satellite backup",
+    indoor: "No",
+    sensors: "\u00B116g accelerometer; ambient temperature; 4 multipurpose I/Os; wireless door, TPMS, cargo camera",
+    installation: "~10 min; all asset types including narrow-corrugation trailers",
+    powerSource: "Solar",
+    mygeotabIntegration: "Full",
+    otaUpdates: "Not specified",
+    regions: "USA, Canada",
+    certifications: "MIL-STD-810G (shock); AAR S-9401 (rail vibration); PTCRB, FCC, IC, CE",
+    keyDifferentiator: "MIL-STD-810G shock & AAR rail vibration certified; dual BLE antennas; deep sensor ecosystem (wireless door, TPMS, tractor ID, cargo cameras)",
+    useCases: "Dry trailers, containers, transport assets, sensor-heavy fleet operations"
+  },
+  {
+    id: "gt-1230",
+    name: "GT 1230",
+    brand: "VIACHAIN / ORBCOMM",
+    category: "solar",
+    tags: ["solar"],
+    badge: "SOLAR",
+    badgeClass: "badge-solar",
+    pills: ["4G LTE", "Integrated Cargo Sensor", "10+ yr Solar", "Smart Asset"],
+    pillClasses: ["highlight", "orange", "green", ""],
+    connectivity: "4G LTE + BLE",
+    gps: "Real-time GPS with breadcrumb trail",
+    batteryLife: "10+ years maintenance-free; holds initial charge 6 months",
+    batteryType: "Solar-powered (improved solar panel)",
+    ipRating: "Not disclosed",
+    operatingTemp: "Not specified",
+    dimensions: "Not disclosed",
+    weight: "Not disclosed",
+    ble: "BLE for wireless sensors",
+    wifi: "No",
+    satellite: "No",
+    indoor: "No",
+    sensors: "Integrated wireless cargo sensor (loaded/unloaded detection); door, ID, temperature, TPMS, 3rd-party BLE",
+    installation: "External; ~10 min; no need to empty asset",
+    powerSource: "Solar",
+    mygeotabIntegration: "Full",
+    otaUpdates: "Not specified",
+    regions: "USA, Canada",
+    certifications: "N/A",
+    keyDifferentiator: "Integrated cargo detection sensor (unique vs GT 1220); smart asset technology for scheduling & routing; improved solar efficiency",
+    useCases: "Dry trailers with cargo monitoring, detention billing, theft prevention"
+  },
+  {
+    id: "tt600",
+    name: "TT600",
+    brand: "Positioning Universal",
+    category: "solar",
+    tags: ["solar"],
+    badge: "SOLAR",
+    badgeClass: "badge-solar",
+    pills: ["LTE Cat-M/NB-IoT", "IP67", "Solar 5-7yr", "6-Axis IMU"],
+    pillClasses: ["highlight", "", "green", "orange"],
+    connectivity: "4G LTE Cat-M / NB-IoT with 2G fallback + BLE",
+    gps: "Multi-constellation GPS (-167 dBm tracking; ~2s assisted acquisition)",
+    batteryLife: "5-7 years (solar); 4 months backup at 12 reports/day",
+    batteryType: "Solar cell + large backup lithium battery (pre-charged)",
+    ipRating: "IP67",
+    operatingTemp: "-20\u00B0C to +70\u00B0C",
+    dimensions: "262 x 88 x 30 mm",
+    weight: "540 g",
+    ble: "Yes \u2014 Bluetooth beacon scanning",
+    wifi: "No",
+    satellite: "No",
+    indoor: "No",
+    sensors: "6-axis IMU (accelerometer + gyroscope); optional door sensor, temperature monitoring, tractor power detection via external connector",
+    installation: "4 fasteners only \u2014 pre-charged, no wiring required; horizontal with sky view",
+    powerSource: "Solar + backup lithium battery",
+    mygeotabIntegration: "Full (GO, ProPlus, Third-Party Device Plans)",
+    otaUpdates: "Yes",
+    regions: "USA, Canada, Australia & New Zealand",
+    certifications: "FCC, IC; SAE J1455 (vibration); ISO 16750-3 (shock); ISO 16750-4 (salt spray); Secure Boot; TLS/SSL",
+    keyDifferentiator: "One of the largest and most efficient solar cells on market; 6-axis IMU (vs. 3-axis in most competitors) detects motion vs. parked to preserve battery; 4-fastener install",
+    useCases: "Trailer tracking, shipping containers, generators, construction equipment, flatbeds, yard management, cargo theft prevention"
+  },
+  {
+    id: "tt603",
+    name: "TT603",
+    brand: "Positioning Universal",
+    category: "solar",
+    tags: ["solar"],
+    badge: "SOLAR",
+    badgeClass: "badge-solar",
+    pills: ["LTE Cat-M/NB-IoT", "IP67", "Built-In I/O", "6-Axis IMU"],
+    pillClasses: ["highlight", "", "orange", ""],
+    connectivity: "4G LTE Cat-M / NB-IoT with 2G fallback + BLE",
+    gps: "Multi-constellation GPS (-167 dBm tracking; dynamic 1 fix/min)",
+    batteryLife: "5-7 years (solar); 4 months backup at 12 reports/day",
+    batteryType: "Solar cell + large backup lithium battery (pre-charged)",
+    ipRating: "IP67",
+    operatingTemp: "-20\u00B0C to +70\u00B0C",
+    dimensions: "Not published separately (similar to TT600)",
+    weight: "Not published separately",
+    ble: "Yes \u2014 Bluetooth beacon scanning",
+    wifi: "No",
+    satellite: "No",
+    indoor: "No",
+    sensors: "6-axis IMU (accident/rollover detection); built-in I/O connector: CAN H/L, RS-232, 1-Wire, aux power; wired door sensor, temperature monitoring, tractor power detection",
+    installation: "4 fasteners + optional wired connections via I/O connector; pre-charged",
+    powerSource: "Solar + backup lithium battery",
+    mygeotabIntegration: "Full (GO and Pro device plans)",
+    otaUpdates: "Yes",
+    regions: "USA, Canada",
+    certifications: "FCC, IC; SAE J1455; ISO 16750-3; ISO 16750-4; Secure Boot; TLS/SSL",
+    keyDifferentiator: "Expanded I/O variant of TT600 with built-in wired connector (CAN, RS-232, 1-Wire) for direct door sensor, temperature probe, and tractor power detection \u2014 no external accessories needed",
+    useCases: "Refrigerated trailers, temperature-sensitive cargo (pharma, food), door-monitored assets, containers, construction equipment, yard management"
+  },
+  // Satellite
+  {
+    id: "sc-1000",
+    name: "SC 1000",
+    brand: "VIACHAIN / ORBCOMM",
+    category: "satellite",
+    tags: ["satellite"],
+    badge: "SATELLITE",
+    badgeClass: "badge-satellite",
+    pills: ["OGx Satellite", "IP67/IPX9K", "ATEX Zone 2", "HERO Mil-Grade"],
+    pillClasses: ["highlight", "", "orange", "orange"],
+    connectivity: "ORBCOMM OGx satellite IoT + BLE 5.2",
+    gps: "GPS, GLONASS, BeiDou, Galileo",
+    batteryLife: "Solar-powered rechargeable Li-ion; long life-cycle",
+    batteryType: "Rechargeable Li-ion + solar panel",
+    ipRating: "IP67 + IPX9K",
+    operatingTemp: "-30\u00B0C to +70\u00B0C",
+    dimensions: "224 x 76 x 28 mm",
+    weight: "Not disclosed",
+    ble: "BLE 5.2",
+    wifi: "No",
+    satellite: "Yes — ORBCOMM OGx (global coverage)",
+    indoor: "No",
+    sensors: "3-axis accelerometer; device temperature; BLE door sensor",
+    installation: "Quick; removable from any equipment",
+    powerSource: "Solar + rechargeable Li-ion",
+    mygeotabIntegration: "Full",
+    otaUpdates: "Not specified",
+    regions: "Global (satellite coverage)",
+    certifications: "Inmarsat Type Approval; FCC/IC; CE RED; ATEX Zone 2; CID2; RoHS; WEEE; HERO (US military-grade)",
+    keyDifferentiator: "Only satellite-based tracker on Marketplace; ATEX Zone 2 + HERO military-grade certified; OGx global coverage where cellular fails",
+    useCases: "Remote areas without cellular, high-value shipments, railcars, agriculture, oil & gas"
+  },
+  // BLE Tags
+  {
+    id: "supertag-pro",
+    name: "SuperTag Pro",
+    brand: "Link Labs (AirFinder)",
+    category: "ble",
+    tags: ["ble","indoor"],
+    badge: "BLE",
+    badgeClass: "badge-ble",
+    pills: ["5-Tech Location", "IP67", "3+ yr Battery", "Indoor/Outdoor"],
+    pillClasses: ["orange", "", "green", "highlight"],
+    connectivity: "Cellular + BLE + WiFi",
+    gps: "GPS/GNSS + WiFi lookup + Cell ID + PoLTE + AirFinder Indoor",
+    batteryLife: "Up to 3 years (GPS-heavy); 3+ yrs (WiFi-priority)",
+    batteryType: "Non-rechargeable",
+    ipRating: "IP67",
+    operatingTemp: "Not specified",
+    dimensions: "~74 x 71 x 23 mm (small config)",
+    weight: "Not disclosed",
+    ble: "Yes",
+    wifi: "WiFi lookup for indoor positioning",
+    satellite: "No",
+    indoor: "Yes — AirFinder Indoor Positioning Network + WiFi + PoLTE",
+    sensors: "Temperature, humidity, shock, tamper detection",
+    installation: "Attach to any asset",
+    powerSource: "Battery only",
+    mygeotabIntegration: "Full (via AirFinder Everywhere platform)",
+    otaUpdates: "Yes (FOTA)",
+    regions: "USA, Canada",
+    certifications: "N/A",
+    keyDifferentiator: "5-technology adaptive location blending (GPS + WiFi + Cell + PoLTE + Indoor); dynamically selects best technology to optimize battery and accuracy",
+    useCases: "Trailer/cargo visibility, returnable assets, supply chain, indoor/outdoor seamless tracking"
+  },
+  {
+    id: "supertag-plus",
+    name: "SuperTag Plus",
+    brand: "Link Labs (AirFinder)",
+    category: "ble",
+    tags: ["ble","indoor"],
+    badge: "BLE",
+    badgeClass: "badge-ble",
+    pills: ["5-Tech Location", "IP67", "7yr Battery", "Indoor/Outdoor"],
+    pillClasses: ["orange", "", "green", "highlight"],
+    connectivity: "Cellular + BLE + WiFi",
+    gps: "GPS/GNSS + WiFi lookup + Cell ID + PoLTE + AirFinder Indoor",
+    batteryLife: "Up to 7 years",
+    batteryType: "Non-rechargeable",
+    ipRating: "IP67",
+    operatingTemp: "Not specified",
+    dimensions: "~84 x 117 x 33 mm",
+    weight: "Not disclosed",
+    ble: "Yes",
+    wifi: "WiFi lookup for indoor positioning",
+    satellite: "No",
+    indoor: "Yes — AirFinder Indoor Positioning Network + WiFi + PoLTE",
+    sensors: "Temperature, humidity, shock, tamper detection",
+    installation: "Attach to any asset",
+    powerSource: "Battery only",
+    mygeotabIntegration: "Full (via AirFinder Everywhere platform)",
+    otaUpdates: "Yes (FOTA)",
+    regions: "USA, Canada",
+    certifications: "N/A",
+    keyDifferentiator: "Longest battery life (7 yrs) in the AirFinder SuperTag line with same 5-technology location platform",
+    useCases: "Trailer visibility, field asset management, indoor/outdoor mixed environments"
+  },
+  {
+    id: "supertag-rechargeable",
+    name: "Rechargeable SuperTag",
+    brand: "Link Labs (AirFinder)",
+    category: "ble",
+    tags: ["ble","indoor"],
+    badge: "BLE",
+    badgeClass: "badge-ble",
+    pills: ["GPS + BLE", "Rechargeable", "3-Month Charge", "Sustainable"],
+    pillClasses: ["highlight", "green", "", ""],
+    connectivity: "Cellular + BLE",
+    gps: "GPS + BLE + cellular ID",
+    batteryLife: "Up to 3 months per charge",
+    batteryType: "Rechargeable",
+    ipRating: "Not disclosed",
+    operatingTemp: "Not specified",
+    dimensions: "Not disclosed",
+    weight: "Not disclosed",
+    ble: "Yes",
+    wifi: "Not specified",
+    satellite: "No",
+    indoor: "Via BLE",
+    sensors: "Temperature, humidity, shock, tamper detection",
+    installation: "Attach to any asset",
+    powerSource: "Rechargeable battery",
+    mygeotabIntegration: "Full (via AirFinder Everywhere platform)",
+    otaUpdates: "Yes (FOTA)",
+    regions: "USA, Canada",
+    certifications: "N/A",
+    keyDifferentiator: "Only rechargeable SuperTag variant; designed for sustainability and dock-based operations where regular charging is feasible",
+    useCases: "Sustainability-focused operations, trailer visibility, dock-to-dock workflows"
+  },
+  {
+    id: "e9-puck",
+    name: "E9 Puck BLE Tag",
+    brand: "Link Labs (AirFinder)",
+    category: "ble",
+    tags: ["ble"],
+    badge: "BLE",
+    badgeClass: "badge-ble",
+    pills: ["BLE Only", "IP67", "Ultra-Low Cost", "Gateway-Dependent"],
+    pillClasses: ["", "", "green", "orange"],
+    connectivity: "Bluetooth Low Energy (requires SuperTag gateway)",
+    gps: "None — relies on proximity to SuperTag for location",
+    batteryLife: "Not publicly disclosed",
+    batteryType: "Not disclosed",
+    ipRating: "IP67",
+    operatingTemp: "Not specified",
+    dimensions: "~36.5 x 23.7 x 5 mm (puck)",
+    weight: "Not disclosed",
+    ble: "BLE (communicates to SuperTag gateway)",
+    wifi: "No",
+    satellite: "No",
+    indoor: "Via SuperTag gateway proximity",
+    sensors: "Tag presence/absence alerts",
+    installation: "Attach puck to asset",
+    powerSource: "Battery",
+    mygeotabIntegration: "Full (via AirFinder Everywhere + MyGeotab)",
+    otaUpdates: "Not specified",
+    regions: "USA, Canada",
+    certifications: "N/A",
+    keyDifferentiator: "Ultra-low cost BLE puck for high-density asset tagging without per-tag cellular costs; works alongside SuperTag-equipped vehicles/gateways",
+    useCases: "Pallet tracking, cargo tagging, tool tracking alongside SuperTag gateways"
+  },
+  {
+    id: "e7-puck",
+    name: "E7 Puck BLE Tag",
+    brand: "Link Labs (AirFinder)",
+    category: "ble",
+    tags: ["ble"],
+    badge: "BLE",
+    badgeClass: "badge-ble",
+    pills: ["BLE Only", "IP67", "Multi-Year Battery", "SymBLE Firmware"],
+    pillClasses: ["", "", "green", "orange"],
+    connectivity: "BLE (SymBLE firmware); requires SuperTag gateway",
+    gps: "None — relies on proximity to SuperTag for location",
+    batteryLife: "Multi-year; up to 5-7 years with XLE technology",
+    batteryType: "Not disclosed",
+    ipRating: "IP67",
+    operatingTemp: "Not specified",
+    dimensions: "Puck form factor (rubber overmold option)",
+    weight: "Not disclosed",
+    ble: "BLE (SymBLE firmware; communicates to SuperTag gateway)",
+    wifi: "No",
+    satellite: "No",
+    indoor: "Via SuperTag gateway proximity",
+    sensors: "Location proximity",
+    installation: "Attach puck to asset; optional rubber overmold",
+    powerSource: "Battery",
+    mygeotabIntegration: "Full (via AirFinder Everywhere + MyGeotab)",
+    otaUpdates: "Yes (FOTA)",
+    regions: "USA, Canada",
+    certifications: "N/A",
+    keyDifferentiator: "SymBLE firmware for versatile asset tracking; optional rubber overmold for added protection; general-purpose puck for assets of all sizes",
+    useCases: "Cargo tracking, general asset tracking (tools, equipment, containers)"
+  },
+  {
+    id: "e8-puck",
+    name: "E8 Puck BLE Tag",
+    brand: "Link Labs (AirFinder)",
+    category: "ble",
+    tags: ["ble","compact"],
+    badge: "BLE",
+    badgeClass: "badge-ble",
+    pills: ["BLE Only", "Smallest Tag", "7yr Battery", "Accelerometer"],
+    pillClasses: ["", "orange", "green", ""],
+    connectivity: "BLE; requires SuperTag gateway",
+    gps: "None — relies on proximity to SuperTag for location",
+    batteryLife: "Up to 7 years (XLE mode); up to 3 years (BLE mode)",
+    batteryType: "Not disclosed",
+    ipRating: "Not disclosed",
+    operatingTemp: "Not specified",
+    dimensions: "Smallest tag in Link Labs lineup",
+    weight: "Not disclosed",
+    ble: "BLE (communicates to SuperTag gateway)",
+    wifi: "No",
+    satellite: "No",
+    indoor: "Via SuperTag gateway proximity",
+    sensors: "Accelerometer; motion detection",
+    installation: "Attach to asset",
+    powerSource: "Battery",
+    mygeotabIntegration: "Full (via AirFinder Everywhere + MyGeotab)",
+    otaUpdates: "Yes (FOTA)",
+    regions: "USA, Canada",
+    certifications: "N/A",
+    keyDifferentiator: "Smallest form factor in Link Labs lineup; built-in accelerometer and motion detection for accurate tracking; up to 7-year battery in XLE mode",
+    useCases: "Tool tracking, small equipment, high-density asset environments"
+  },
+  {
+    id: "c10-badge",
+    name: "C10 Badge BLE Tag",
+    brand: "Link Labs (AirFinder)",
+    category: "ble",
+    tags: ["ble","compact","indoor"],
+    badge: "BLE",
+    badgeClass: "badge-ble",
+    pills: ["BLE 5.0", "IP65", "Panic Button", "Badge Form Factor"],
+    pillClasses: ["", "", "orange", "highlight"],
+    connectivity: "Bluetooth LE 5.0 (Nordic nRF52); 100m range; requires SuperTag gateway",
+    gps: "None — relies on proximity to SuperTag for location",
+    batteryLife: "~3 years (non-replaceable lithium polymer)",
+    batteryType: "Non-replaceable lithium polymer",
+    ipRating: "IP65",
+    operatingTemp: "Not specified",
+    dimensions: "85.5 x 55 x 4.5 mm (credit-card/badge form)",
+    weight: "Not disclosed",
+    ble: "BLE 5.0 (Nordic nRF52 chipset; 100m broadcast range)",
+    wifi: "No",
+    satellite: "No",
+    indoor: "Yes — indoor personnel positioning via SuperTag gateway",
+    sensors: "Accelerometer; panic/SOS button; optional RFID (LF/HF/UHF)",
+    installation: "Worn as badge or attached to asset",
+    powerSource: "Battery (non-replaceable)",
+    mygeotabIntegration: "Full (via AirFinder Everywhere + MyGeotab)",
+    otaUpdates: "Not specified",
+    regions: "USA, Canada",
+    certifications: "N/A",
+    keyDifferentiator: "Credit-card badge form factor for personnel tracking; built-in panic/SOS button for emergency alerting; optional RFID integration",
+    useCases: "Personnel management, workplace safety, hospital staff/patient tracking, indoor positioning"
+  },
+  {
+    id: "s1-temp",
+    name: "S1 Temperature Sensor",
+    brand: "Link Labs (AirFinder)",
+    category: "ble",
+    tags: ["ble"],
+    badge: "BLE",
+    badgeClass: "badge-ble",
+    pills: ["BLE 5.0", "IP66", "Temp + Humidity", "Cold Chain"],
+    pillClasses: ["", "", "orange", "highlight"],
+    connectivity: "Bluetooth LE 5.0 (iBeacon + Eddystone); 100m range; requires SuperTag gateway",
+    gps: "None — relies on proximity to SuperTag for location",
+    batteryLife: "Up to 2.5-3 years",
+    batteryType: "Lithium iron phosphate (replaceable)",
+    ipRating: "IP66",
+    operatingTemp: "-20\u00B0C to +60\u00B0C",
+    dimensions: "Not disclosed",
+    weight: "37.5 g",
+    ble: "BLE 5.0 (iBeacon + Eddystone; 100m range)",
+    wifi: "No",
+    satellite: "No",
+    indoor: "Via SuperTag gateway proximity",
+    sensors: "Temperature + humidity combined sensor; stores up to 200 records",
+    installation: "Attach to asset or inside container",
+    powerSource: "Battery (replaceable)",
+    mygeotabIntegration: "Full (via AirFinder Everywhere + MyGeotab)",
+    otaUpdates: "Yes (OTA)",
+    regions: "USA, Canada",
+    certifications: "N/A",
+    keyDifferentiator: "Real-time temperature and humidity monitoring with data logging (200 records); purpose-built for cold chain and environmental compliance",
+    useCases: "Cold chain monitoring, pharmaceutical/food transport, refrigerated trailer monitoring, cargo temperature tracking"
+  },
+  {
+    id: "open-close-sensor",
+    name: "Open/Close BLE Sensor",
+    brand: "Link Labs (AirFinder)",
+    category: "ble",
+    tags: ["ble"],
+    badge: "BLE",
+    badgeClass: "badge-ble",
+    pills: ["BLE 5.0", "Door Sensor", "2,048 Event Log", "Tamper Alert"],
+    pillClasses: ["", "orange", "", ""],
+    connectivity: "Bluetooth LE 5.0; 100m range; requires SuperTag gateway",
+    gps: "None — relies on proximity to SuperTag for location",
+    batteryLife: "~13 months (230 mAh, replaceable)",
+    batteryType: "230 mAh replaceable battery",
+    ipRating: "Indoor use (not rated for outdoor/wet)",
+    operatingTemp: "-20\u00B0C to +60\u00B0C",
+    dimensions: "Main: 55 x 26.2 x 13 mm / Magnet: 38.5 x 12.5 x 11 mm",
+    weight: "26.6 g (with battery)",
+    ble: "BLE 5.0 (100m broadcast range)",
+    wifi: "No",
+    satellite: "No",
+    indoor: "Via SuperTag gateway proximity",
+    sensors: "Magnetic contact (Hall-effect) door/window open-close detection; tamper alert; stores up to 2,048 event records",
+    installation: "Adhesive mount on door/window frame",
+    powerSource: "Battery (replaceable)",
+    mygeotabIntegration: "Full (via AirFinder Everywhere + MyGeotab)",
+    otaUpdates: "Yes (OTA)",
+    regions: "USA, Canada",
+    certifications: "N/A",
+    keyDifferentiator: "Purpose-built door/window open-close detection with magnetic Hall-effect sensor; tamper alerts; stores 2,048 local event records for offline logging",
+    useCases: "Trailer door monitoring, cargo container access, cold chain door events, security/access monitoring"
+  },
+  {
+    id: "iox-bt",
+    name: "IOX-BT",
+    brand: "Geotab",
+    category: "ble",
+    tags: ["ble"],
+    badge: "BLE",
+    badgeClass: "badge-ble",
+    pills: ["BLE Reader", "200 Beacons", "IOX Add-On", "Any BLE Beacon"],
+    pillClasses: ["highlight", "orange", "", "green"],
+    connectivity: "BLE (reads nearby BLE beacons via GO device)",
+    gps: "N/A — uses GO device GPS",
+    batteryLife: "N/A (powered via GO device)",
+    batteryType: "N/A (powered via GO device IOX port)",
+    ipRating: "N/A",
+    operatingTemp: "Not specified",
+    dimensions: "IOX form factor (plugs into GO device)",
+    weight: "Not specified",
+    ble: "BLE reader — scans up to 200 simultaneous beacons",
+    wifi: "No",
+    satellite: "No",
+    indoor: "No",
+    sensors: "Reads illuminance, ambient temperature, impact data from compatible beacons",
+    installation: "Plug into GO device IOX port; daisy-chainable",
+    powerSource: "Powered via GO device",
+    mygeotabIntegration: "Full (requires ProPlus plan)",
+    otaUpdates: "Yes (via GO device)",
+    regions: "8 regions; 4 languages",
+    certifications: "N/A",
+    keyDifferentiator: "Transforms any GO-equipped vehicle into a BLE beacon scanner; compatible with any public-MAC BLE beacon (no vendor lock-in); reads up to 200 beacons simultaneously",
+    useCases: "Tool/equipment inventory tracking, in-cab sensor monitoring, last-known BLE asset location"
+  }
+];
+
+// ── COMPARISON SPEC ROWS ──
+const specRows = [
+  { section: "Connectivity & Location" },
+  { label: "Connectivity", key: "connectivity" },
+  { label: "GPS / GNSS", key: "gps" },
+  { label: "Bluetooth (BLE)", key: "ble" },
+  { label: "WiFi", key: "wifi" },
+  { label: "Satellite", key: "satellite" },
+  { label: "Indoor Positioning", key: "indoor" },
+  { section: "Power & Battery" },
+  { label: "Battery Life", key: "batteryLife" },
+  { label: "Battery Type", key: "batteryType" },
+  { label: "Power Source", key: "powerSource" },
+  { section: "Durability & Environment" },
+  { label: "IP Rating", key: "ipRating" },
+  { label: "Operating Temp", key: "operatingTemp" },
+  { label: "Certifications", key: "certifications" },
+  { section: "Physical" },
+  { label: "Dimensions", key: "dimensions" },
+  { label: "Weight", key: "weight" },
+  { label: "Installation", key: "installation" },
+  { section: "Sensors & Features" },
+  { label: "Sensors", key: "sensors" },
+  { label: "OTA Updates", key: "otaUpdates" },
+  { label: "MyGeotab Integration", key: "mygeotabIntegration" },
+  { section: "Coverage & Use" },
+  { label: "Regions", key: "regions" },
+  { label: "Use Cases", key: "useCases" },
+  { label: "Key Differentiator", key: "keyDifferentiator", highlight: true }
+];
+
+// ── STATE ──
+let selectedIds = [];
+let activeFilter = "all";
+let compareSlots = [null, null, null]; // 3 slots minimum, up to 4
+
+// ── RENDER CARDS ──
+function renderCards() {
+  const grids = { gps: [], solar: [], satellite: [], ble: [] };
+  products.forEach(p => { grids[p.category].push(p); });
+
+  Object.keys(grids).forEach(cat => {
+    const gridEl = document.getElementById(cat === "satellite" ? "satGrid" : cat + "Grid");
+    const countEl = document.getElementById(cat === "satellite" ? "satCount" : cat + "Count");
+    const filtered = grids[cat].filter(p => {
+      if (activeFilter === "all") return true;
+      return p.tags.includes(activeFilter);
+    });
+    countEl.textContent = filtered.length;
+    gridEl.innerHTML = filtered.map(p => `
+      <div class="product-card ${selectedIds.includes(p.id) ? 'selected' : ''}" data-id="${p.id}" onclick="toggleSelect('${p.id}')">
+        <div class="card-type-badge ${p.badgeClass}">${p.badge}</div>
+        <div class="card-header">
+          <div>
+            <div class="brand">${p.brand}</div>
+            <h3>${p.name}</h3>
+          </div>
+          <div class="check-indicator">${selectedIds.includes(p.id) ? '\u2713' : ''}</div>
+        </div>
+        <div class="quick-specs">
+          ${p.pills.map((pill, i) => `<span class="spec-pill ${p.pillClasses[i] || ''}">${pill}</span>`).join('')}
+        </div>
+      </div>
+    `).join('');
+
+    // Hide section if no products
+    gridEl.previousElementSibling.style.display = filtered.length ? '' : 'none';
+    gridEl.style.display = filtered.length ? '' : 'none';
+  });
+}
+
+// ── SELECTION ──
+function toggleSelect(id) {
+  const idx = selectedIds.indexOf(id);
+  if (idx > -1) {
+    selectedIds.splice(idx, 1);
+  } else {
+    if (selectedIds.length >= 4) {
+      selectedIds.shift(); // remove oldest
+    }
+    selectedIds.push(id);
+  }
+  renderCards();
+  updateCompareBar();
+}
+
+function clearSelection() {
+  selectedIds = [];
+  renderCards();
+  updateCompareBar();
+}
+
+function updateCompareBar() {
+  const bar = document.getElementById('compareBar');
+  const namesEl = document.getElementById('selectedNames');
+  if (selectedIds.length > 0) {
+    bar.classList.add('visible');
+    namesEl.innerHTML = selectedIds.map(id => {
+      const p = products.find(x => x.id === id);
+      return `<span>\u25CF ${p.name}</span>`;
+    }).join('');
+    document.getElementById('compareBtn').textContent = `Compare ${selectedIds.length} Product${selectedIds.length > 1 ? 's' : ''}`;
+  } else {
+    bar.classList.remove('visible');
+  }
+}
+
+// ── FILTERS ──
+document.getElementById('filterGroup').addEventListener('click', e => {
+  if (!e.target.classList.contains('filter-btn')) return;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  activeFilter = e.target.dataset.filter;
+  renderCards();
+});
+
+// ── COMPARISON MODAL ──
+function openComparison() {
+  // Ensure at least 2 selected
+  if (selectedIds.length < 2) {
+    alert('Please select at least 2 products to compare.');
+    return;
+  }
+  // Populate compare slots (up to 4)
+  compareSlots = selectedIds.slice(0, 4);
+  while (compareSlots.length < 3) compareSlots.push(null);
+  renderModal();
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// Close on overlay click
+document.getElementById('modalOverlay').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeModal();
+});
+
+// Close on Escape
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
+
+function renderModal() {
+  const selectors = document.getElementById('modalSelectors');
+  const slotCount = Math.max(3, compareSlots.filter(Boolean).length < 4 ? 3 : 4);
+
+  // Ensure compareSlots has correct length
+  while (compareSlots.length < slotCount) compareSlots.push(null);
+
+  // Render dropdown selectors
+  selectors.innerHTML = compareSlots.slice(0, slotCount).map((slotId, i) => `
+    <div class="selector-slot">
+      <label>Product ${i + 1}</label>
+      <select onchange="updateSlot(${i}, this.value)">
+        <option value="">— Select a product —</option>
+        ${products.map(p => `<option value="${p.id}" ${p.id === slotId ? 'selected' : ''}>${p.brand} — ${p.name}</option>`).join('')}
+      </select>
+    </div>
+  `).join('') + `
+    ${slotCount < 4 ? `<div class="selector-slot" style="flex:0;min-width:auto;display:flex;align-items:flex-end;">
+      <button onclick="addSlot()" style="padding:8px 14px;border:2px dashed var(--gray-300);border-radius:8px;background:none;cursor:pointer;color:var(--gray-500);font-size:13px;white-space:nowrap;">+ Add 4th</button>
+    </div>` : ''}
+  `;
+
+  renderComparisonTable();
+}
+
+function updateSlot(index, productId) {
+  compareSlots[index] = productId || null;
+  renderComparisonTable();
+}
+
+function addSlot() {
+  if (compareSlots.length < 4) {
+    compareSlots.push(null);
+  }
+  renderModal();
+}
+
+function renderComparisonTable() {
+  const table = document.getElementById('comparisonTable');
+  const activeProducts = compareSlots.filter(Boolean).map(id => products.find(p => p.id === id)).filter(Boolean);
+
+  if (activeProducts.length === 0) {
+    table.innerHTML = '<tr><td style="padding:40px;text-align:center;color:var(--gray-400);">Select products from the dropdowns above to begin comparing.</td></tr>';
+    return;
+  }
+
+  let html = '<thead><tr><th>Specification</th>';
+  activeProducts.forEach(p => {
+    html += `<th>${p.name}<br><span style="font-weight:400;font-size:12px;opacity:0.8;">${p.brand}</span></th>`;
+  });
+  html += '</tr></thead><tbody>';
+
+  specRows.forEach(row => {
+    if (row.section) {
+      html += `<tr class="section-row"><td colspan="${activeProducts.length + 1}">${row.section}</td></tr>`;
+      return;
+    }
+    html += `<tr><td>${row.label}</td>`;
+    activeProducts.forEach(p => {
+      let val = p[row.key] || "N/A";
+      let cls = '';
+      if (val === 'Yes' || val === 'Yes (FOTA)') cls = 'val-yes';
+      else if (val === 'No' || val === 'N/A') cls = 'val-no';
+      else if (row.highlight) cls = 'val-highlight';
+      // Highlight best battery life
+      if (row.key === 'batteryLife' && val.includes('20 year')) cls = 'val-best';
+      html += `<td class="${cls}">${val}</td>`;
+    });
+    html += '</tr>';
+  });
+
+  html += '</tbody>';
+  table.innerHTML = html;
+}
+
+// ── INIT ──
+renderCards();
+
+// ── CONTACT FORM ──
+function openContactForm() {
+  document.getElementById('contactOverlay').classList.add('open');
+  document.getElementById('contactFormEl').style.display = '';
+  document.getElementById('contactSuccess').style.display = 'none';
+  document.getElementById('contactFormEl').reset();
+}
+
+function closeContactForm() {
+  document.getElementById('contactOverlay').classList.remove('open');
+}
+
+function submitContactForm(e) {
+  e.preventDefault();
+  const btn = document.querySelector('.contact-submit');
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+
+  const payload = {
+    name: document.getElementById('cfName').value.trim(),
+    email: document.getElementById('cfEmail').value.trim(),
+    company: document.getElementById('cfCompany').value.trim(),
+    message: document.getElementById('cfMessage').value.trim()
+  };
+
+  fetch('https://script.google.com/macros/s/AKfycbwvRzixecCtZqoXARwZFRpsGKm24qaFelzBaoGP1mpGMqDDEqkXWFwsuSXXr0Dkg34m/exec', {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  }).then(function() {
+    document.getElementById('contactFormEl').style.display = 'none';
+    document.getElementById('contactSuccess').style.display = '';
+    btn.disabled = false;
+    btn.textContent = 'Submit';
+  }).catch(function() {
+    btn.disabled = false;
+    btn.textContent = 'Submit';
+    alert('There was an issue sending your message. Please try again.');
+  });
+}
+
+document.getElementById('contactOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeContactForm();
+});
+</script>
+
+<!-- Contact Form Modal -->
+<div class="contact-overlay" id="contactOverlay">
+  <div class="contact-modal">
+    <div class="contact-header">
+      <h3>Contact a Geotab Representative</h3>
+      <button class="contact-close" onclick="closeContactForm()">&times;</button>
+    </div>
+    <form class="contact-form" id="contactFormEl" onsubmit="submitContactForm(event)">
+      <div class="form-row">
+        <label>Name <input type="text" id="cfName" required placeholder="Your full name"></label>
+        <label>Email <input type="email" id="cfEmail" required placeholder="you@company.com"></label>
+      </div>
+      <label>Company Name <input type="text" id="cfCompany" required placeholder="Your company"></label>
+      <label>Message <textarea id="cfMessage" required placeholder="Tell us about your fleet tracking needs..."></textarea></label>
+      <button type="submit" class="contact-submit">Submit</button>
+      <p class="contact-note">Your inquiry will be sent directly to our Marketplace team.</p>
+    </form>
+    <div class="contact-success" id="contactSuccess" style="display:none;">
+      <svg width="56" height="56" viewBox="0 0 56 56" fill="none"><circle cx="28" cy="28" r="28" fill="#E8F4FA"/><path d="M20 29l6 6 12-14" stroke="#00538B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <h4>Thank you!</h4>
+      <p>Your inquiry has been sent to our Marketplace team. A representative will be in touch shortly.</p>
+      <button class="contact-done-btn" onclick="closeContactForm()">Done</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
