@@ -562,6 +562,16 @@
     margin-left: 10px;
   }
   .clear-btn:hover { background: rgba(255,255,255,0.1); }
+  .copy-link-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: transparent; color: rgba(255,255,255,0.8);
+    border: 1px solid rgba(255,255,255,0.3);
+    padding: 8px 14px; border-radius: 8px;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    margin-left: 10px; transition: all 0.15s; font-family: inherit; white-space: nowrap;
+  }
+  .copy-link-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+  .copy-link-btn.copied { border-color: #6ee7b7; color: #6ee7b7; }
 
   /* ── Comparison Modal ── */
   .modal-overlay {
@@ -971,6 +981,10 @@
   </div>
   <div style="display:flex;align-items:center;">
     <button class="compare-btn" id="compareBtn" onclick="openComparison()">Compare Selected</button>
+    <button class="copy-link-btn" id="copyLinkBtn" onclick="copyCompareLink()">
+      <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+      Copy link
+    </button>
     <button class="clear-btn" onclick="clearSelection()">Clear All</button>
   </div>
 </div>
@@ -2102,12 +2116,14 @@ function toggleSelect(id) {
   }
   renderCards();
   updateCompareBar();
+  syncUrlToSelection();
 }
 
 function clearSelection() {
   selectedIds = [];
   renderCards();
   updateCompareBar();
+  syncUrlToSelection();
 }
 
 function updateCompareBar() {
@@ -2239,8 +2255,42 @@ function renderComparisonTable() {
   table.innerHTML = html;
 }
 
+// ── SHAREABLE URL ──────────────────────────────────────────────────────────
+function syncUrlToSelection() {
+  const url = new URL(window.location.href);
+  if (selectedIds.length > 0) {
+    url.searchParams.set('compare', selectedIds.join(','));
+  } else {
+    url.searchParams.delete('compare');
+  }
+  history.replaceState(null, '', url.toString());
+}
+
+function loadSelectionFromUrl() {
+  const param = new URLSearchParams(window.location.search).get('compare');
+  if (!param) return;
+  const ids = param.split(',').map(s => s.trim()).filter(id => products.some(p => p.id === id));
+  if (ids.length === 0) return;
+  selectedIds = ids.slice(0, 4);
+  renderCards();
+  updateCompareBar();
+}
+
+function copyCompareLink() {
+  const btn = document.getElementById('copyLinkBtn');
+  navigator.clipboard.writeText(window.location.href).then(() => {
+    btn.classList.add('copied');
+    btn.innerHTML = `<svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> Copied!`;
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = `<svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg> Copy link`;
+    }, 2200);
+  });
+}
+
 // ── INIT ──
 renderCards();
+loadSelectionFromUrl();
 
 // ── CONTACT FORM ──
 function openContactForm() {
@@ -2463,6 +2513,7 @@ function quizSelectProduct(id) {
     selectedIds.push(id);
     renderCards();
     updateCompareBar();
+    syncUrlToSelection();
   }
   // Scroll to the card
   setTimeout(() => {
@@ -2708,6 +2759,7 @@ function segSelectProduct(id) {
     selectedIds.push(id);
     renderCards();
     updateCompareBar();
+    syncUrlToSelection();
   }
   setTimeout(() => {
     const card = document.querySelector(`[data-id="${id}"]`);
