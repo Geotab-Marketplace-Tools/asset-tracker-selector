@@ -194,6 +194,21 @@
     gap: 4px;
     margin-top: 8px;
   }
+  .mp-link {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid var(--gray-100);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--geotab-accent);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .mp-link:hover { color: var(--geotab-dark); }
+  .mp-link svg { flex-shrink: 0; }
   .spec-pill {
     font-size: 11px;
     padding: 2px 8px;
@@ -738,6 +753,7 @@ const products = [
     certifications: "UL 94 V-0 housing",
     keyDifferentiator: "Geotab's own branded tracker with deepest MyGeotab integration and OTA firmware updates",
     useCases: "Non-powered trailers, construction equipment, generators, containers, seasonal assets",
+    marketplaceUrl: "https://marketplace.geotab.com/solutions/go-anywhere/",
     image: "https://storage.googleapis.com/geotab_mp_images/solution_logos/ebdba5df-3580-46c3-949a-86614b32c0c8.png"
   },
   {
@@ -772,6 +788,7 @@ const products = [
     certifications: "NDAA compliant; TAA compliant; FIPS 140-3; FedRAMP authorized",
     keyDifferentiator: "First commercial Geotab IoT device with Starlink Direct to Cell satellite; eliminates need for separate satellite hardware; hybrid wired + battery backup; works in cellular dead zones",
     useCases: "High-value mixed fleets, trailers, heavy equipment, generators, remote jobsites, theft recovery, construction",
+    marketplaceUrl: "https://marketplace.geotab.com/solutions/go-anywhere-plus/",
     image: "https://storage.googleapis.com/geotab_mp_images/solution_logos/aee68635-47bc-4644-8452-be89cc0f8e5b.png"
   },
   {
@@ -805,6 +822,7 @@ const products = [
     certifications: "AES-256 encryption",
     keyDifferentiator: "5-constellation GPS with Sony chipset; fastest cold-start acquisition in Digital Matter lineup",
     useCases: "Trailers, containers, skip bins, equipment, vehicles",
+    marketplaceUrl: "https://marketplace.geotab.com/solutions/oyster3/",
     image: "https://storage.googleapis.com/geotab_mp_images/solution_resources/9e834932-e1c0-498b-9ed5-263705f22265.jpg"
   },
   {
@@ -838,6 +856,7 @@ const products = [
     certifications: "N/A",
     keyDifferentiator: "Longest-life battery tracker on Marketplace (20 yrs); BLE 5.2 gateway for tagged asset management; D-cell LTC for extreme temps",
     useCases: "Long-life deployments, high-value equipment, remote/challenging environments",
+    marketplaceUrl: "https://marketplace.geotab.com/solutions/remora3/",
     image: "https://storage.googleapis.com/geotab_mp_images/solution_resources/955f9f71-033d-4f99-a76f-6607b176713b.jpg"
   },
   {
@@ -871,6 +890,7 @@ const products = [
     certifications: "N/A",
     keyDifferentiator: "Smallest & lightest long-life GPS tracker on the Marketplace; uses AAA batteries for ultra-compact form",
     useCases: "Tools, inventory pallets, cargo, returnable assets, light equipment",
+    marketplaceUrl: "https://marketplace.geotab.com/solutions/yabby3/",
     image: "https://storage.googleapis.com/geotab_mp_images/solution_resources/27e6f276-c15a-4cd9-a9a1-42b204ce2e46.jpg"
   },
   {
@@ -904,6 +924,7 @@ const products = [
     certifications: "N/A",
     keyDifferentiator: "WiFi scanning for indoor positioning; BLE 5.2 gateway relays data from nearby BLE tags; seamless indoor/outdoor transition",
     useCases: "Indoor/outdoor assets, BLE tagged asset management, warehousing",
+    marketplaceUrl: "https://marketplace.geotab.com/solutions/oyster-edge/",
     image: "https://storage.googleapis.com/geotab_mp_images/solution_resources/82d15c78-b5ce-4da2-a41a-5bb987932917.jpg"
   },
   {
@@ -937,6 +958,7 @@ const products = [
     certifications: "N/A",
     keyDifferentiator: "Compact Yabby form factor with multi-technology indoor/outdoor location (GNSS + WiFi + Cell)",
     useCases: "Compact assets, indoor/outdoor mixed environments, cargo, pallets",
+    marketplaceUrl: "https://marketplace.geotab.com/solutions/yabby-edge/",
     image: "https://storage.googleapis.com/geotab_mp_images/solution_resources/2ab9602a-cd7a-4366-8a9b-900bb0d0f187.jpg"
   },
   {
@@ -970,6 +992,7 @@ const products = [
     certifications: "AES-256 encryption",
     keyDifferentiator: "Ultra-slim profile (21mm thick) for narrow surfaces; magnetic switch activation and tamper detection; lowest profile in Digital Matter lineup",
     useCases: "Covert installation on thin assets, field services, transportation & logistics",
+    marketplaceUrl: "https://marketplace.geotab.com/solutions/barra-edge/",
     image: "https://storage.googleapis.com/geotab_mp_images/solution_resources/624eb0f6-5dbb-4003-ab2d-1a330f2d8ae3.jpg"
   },
   {
@@ -1003,6 +1026,7 @@ const products = [
     certifications: "N/A",
     keyDifferentiator: "Only wired tracker in BlueArrow lineup; -168 dBm GPS sensitivity (most sensitive); PTO and engine hours via 3 digital inputs",
     useCases: "Powered vehicles and equipment, mixed fleet wired tracking, PTO-enabled machinery",
+    marketplaceUrl: "https://marketplace.geotab.com/solutions/g70/",
     image: "https://storage.googleapis.com/geotab_mp_images/solution_resources/e2b41197-864a-4e6f-acfc-ed367790d334.jpg"
   },
   {
@@ -1036,6 +1060,7 @@ const products = [
     certifications: "CE, PTCRB, FCC/IC",
     keyDifferentiator: "Smallest and lightest tracker (50g, Tic-Tac size); richest onboard sensor suite (temp/humidity/pressure/light); USB rechargeable; WiFi indoor positioning",
     useCases: "Packages, temperature-sensitive goods, forklifts, light towers, trailers, small/medium tools",
+    marketplaceUrl: "https://marketplace.geotab.com/solutions/bemini-asset-tracker/",
     image: "https://storage.googleapis.com/geotab_mp_images/solution_logos/aee12adf-7efb-4eb5-be64-f216106256ec.png"
   },
   {
@@ -1069,6 +1094,7 @@ const products = [
     certifications: "Thatcham S7 certified (insurance-grade theft recovery)",
     keyDifferentiator: "Only Thatcham S7-certified tracker on Marketplace; multi-network (satellite + cellular + LoRa) for maximum coverage; discreet magnetic design; 1-hour national recovery SLA (UK)",
     useCases: "Agricultural machinery, construction equipment, trailers, power units, high-theft-risk assets",
+    marketplaceUrl: "https://marketplace.geotab.com/solutions/magtrack-pro/",
     image: "https://storage.googleapis.com/geotab_mp_images/solution_resources/ece6336d-dfaf-4660-a27b-40d4709b15c6.png"
   },
   {
@@ -1102,6 +1128,7 @@ const products = [
     certifications: "Encrypted location data",
     keyDifferentiator: "Credit-card form factor; no per-device fees; unlimited tags and users per account; QR code quick setup",
     useCases: "Personal valuables, portable tools, lightweight asset tagging",
+    marketplaceUrl: "https://marketplace.geotab.com/solutions/tag-iq-card/",
     image: "https://storage.googleapis.com/geotab_mp_images/solution_resources/3a76b028-d2b3-46d0-a17e-1cb8f72f7163.png"
   },
   // Solar-Powered
@@ -1136,6 +1163,7 @@ const products = [
     certifications: "FCC, PTCRB",
     keyDifferentiator: "Industry-leading 10-year solar battery; SolarNet 8000 adds integrated cargo camera and TPMS; deep sensor ecosystem (PSI, ConMet, TSE, SKF, Compology, etc.)",
     useCases: "Dry trailers, chassis, containers, Class 8, construction equipment, boats",
+    marketplaceUrl: "https://marketplace.geotab.com/solutions/solarnet/",
     image: "https://storage.googleapis.com/geotab_mp_images/solution_logos/ac30e684-925f-4a83-84f9-de7e12893867.png"
   },
   {
@@ -1169,6 +1197,7 @@ const products = [
     certifications: "N/A",
     keyDifferentiator: "Covert design for hidden placement; ultra-sensitive -162 dBm GPS tracking; works with full Phillips Connect sensor ecosystem",
     useCases: "Covert trailer tracking, theft deterrence, assets without constant power",
+    marketplaceUrl: "https://marketplace.geotab.com/solutions/stealthnet/",
     image: "https://storage.googleapis.com/geotab_mp_images/solution_resources/b47af58e-81b0-420e-b108-9e2bcf91d812.png"
   },
   {
@@ -1202,6 +1231,7 @@ const products = [
     certifications: "CE Mark; ATEX Zone 2 certified",
     keyDifferentiator: "ATEX Zone 2 certified for hazardous environments; global SIM with 565 networks in 180 countries; fastest install (1 minute)",
     useCases: "Intermodal containers, dry trailers, maritime, hazardous environments",
+    marketplaceUrl: "https://marketplace.geotab.com/solutions/ct-1000-solar-powered-tracking/",
     image: "https://storage.googleapis.com/geotab_mp_images/solution_logos/1003c085-44bd-470c-9e6d-3e2527e98322.jpg"
   },
   {
@@ -1235,6 +1265,7 @@ const products = [
     certifications: "MIL-STD-810G (shock); AAR S-9401 (rail vibration); PTCRB, FCC, IC, CE",
     keyDifferentiator: "MIL-STD-810G shock & AAR rail vibration certified; dual BLE antennas; deep sensor ecosystem (wireless door, TPMS, tractor ID, cargo cameras)",
     useCases: "Dry trailers, containers, transport assets, sensor-heavy fleet operations",
+    marketplaceUrl: "https://marketplace.geotab.com/solutions/gt-1220-advanced-asset-tracking/",
     image: "https://storage.googleapis.com/geotab_mp_images/solution_logos/6f197015-d570-4106-bfef-36791e47a500.jpg"
   },
   {
@@ -1268,6 +1299,7 @@ const products = [
     certifications: "N/A",
     keyDifferentiator: "Integrated cargo detection sensor (unique vs GT 1220); smart asset technology for scheduling & routing; improved solar efficiency",
     useCases: "Dry trailers with cargo monitoring, detention billing, theft prevention",
+    marketplaceUrl: "https://marketplace.geotab.com/solutions/gt-1230-asset-tracking-cargo-sensor/",
     image: "https://storage.googleapis.com/geotab_mp_images/solution_resources/0eea87ea-6292-44a6-988e-ca4abf31f93f.jpg"
   },
   {
@@ -1301,6 +1333,7 @@ const products = [
     certifications: "FCC, IC; SAE J1455 (vibration); ISO 16750-3 (shock); ISO 16750-4 (salt spray); Secure Boot; TLS/SSL",
     keyDifferentiator: "One of the largest and most efficient solar cells on market; 6-axis IMU (vs. 3-axis in most competitors) detects motion vs. parked to preserve battery; 4-fastener install",
     useCases: "Trailer tracking, shipping containers, generators, construction equipment, flatbeds, yard management, cargo theft prevention",
+    marketplaceUrl: "https://marketplace.geotab.com/solutions/pui-tt600/",
     image: "https://storage.googleapis.com/geotab_mp_images/solution_logos/3f3af7ed-9660-40a3-a7f5-6ab77212e8a7.png"
   },
   {
@@ -1334,6 +1367,7 @@ const products = [
     certifications: "FCC, IC; SAE J1455; ISO 16750-3; ISO 16750-4; Secure Boot; TLS/SSL",
     keyDifferentiator: "Expanded I/O variant of TT600 with built-in wired connector (CAN, RS-232, 1-Wire) for direct door sensor, temperature probe, and tractor power detection \u2014 no external accessories needed",
     useCases: "Refrigerated trailers, temperature-sensitive cargo (pharma, food), door-monitored assets, containers, construction equipment, yard management",
+    marketplaceUrl: "https://marketplace.geotab.com/solutions/pui-tt603/",
     image: "https://storage.googleapis.com/geotab_mp_images/solution_logos/ac6f08ab-32d6-43ed-bce6-f0e4dbb2d600.png"
   },
   // Satellite
@@ -1368,6 +1402,7 @@ const products = [
     certifications: "Inmarsat Type Approval; FCC/IC; CE RED; ATEX Zone 2; CID2; RoHS; WEEE; HERO (US military-grade)",
     keyDifferentiator: "Only satellite-based tracker on Marketplace; ATEX Zone 2 + HERO military-grade certified; OGx global coverage where cellular fails",
     useCases: "Remote areas without cellular, high-value shipments, railcars, agriculture, oil & gas",
+    marketplaceUrl: "https://marketplace.geotab.com/solutions/sc-1000-satellite-asset-tracking/",
     image: "https://storage.googleapis.com/geotab_mp_images/solution_logos/533aff8b-e764-4d7f-a6aa-cb7d64866dc0.jpg"
   },
   // BLE Tags
@@ -1402,6 +1437,7 @@ const products = [
     certifications: "N/A",
     keyDifferentiator: "5-technology adaptive location blending (GPS + WiFi + Cell + PoLTE + Indoor); dynamically selects best technology to optimize battery and accuracy",
     useCases: "Trailer/cargo visibility, returnable assets, supply chain, indoor/outdoor seamless tracking",
+    marketplaceUrl: "https://marketplace.geotab.com/solutions/airfinder-everywhere-supertag-pro/",
     image: "https://storage.googleapis.com/geotab_mp_images/solution_logos/4241e582-10d5-44fb-928e-78c69c84fdab.png"
   },
   {
@@ -1435,6 +1471,7 @@ const products = [
     certifications: "N/A",
     keyDifferentiator: "Longest battery life (7 yrs) in the AirFinder SuperTag line with same 5-technology location platform",
     useCases: "Trailer visibility, field asset management, indoor/outdoor mixed environments",
+    marketplaceUrl: "https://marketplace.geotab.com/solutions/airfinder-everywhere-supertag-plus/",
     image: "https://storage.googleapis.com/geotab_mp_images/solution_logos/c231eaef-9530-4703-aacb-26955f43ca25.png"
   },
   {
@@ -1468,6 +1505,7 @@ const products = [
     certifications: "N/A",
     keyDifferentiator: "Only rechargeable SuperTag variant; designed for sustainability and dock-based operations where regular charging is feasible",
     useCases: "Sustainability-focused operations, trailer visibility, dock-to-dock workflows",
+    marketplaceUrl: "https://marketplace.geotab.com/solutions/airfinder-everywhere-rechargeable-supertag/",
     image: "https://storage.googleapis.com/geotab_mp_images/solution_logos/567edad4-a55a-4dd8-8f6e-54ef54b80a96.png"
   },
   {
@@ -1501,6 +1539,7 @@ const products = [
     certifications: "N/A",
     keyDifferentiator: "Ultra-low cost BLE puck for high-density asset tagging without per-tag cellular costs; works alongside SuperTag-equipped vehicles/gateways",
     useCases: "Pallet tracking, cargo tagging, tool tracking alongside SuperTag gateways",
+    marketplaceUrl: "https://marketplace.geotab.com/solutions/e9-puck-ble-tag/",
     image: "https://storage.googleapis.com/geotab_mp_images/solution_logos/9f77c82f-e0e0-45b5-aeb4-312654cd6ac6.png"
   },
   {
@@ -1534,6 +1573,7 @@ const products = [
     certifications: "N/A",
     keyDifferentiator: "SymBLE firmware for versatile asset tracking; optional rubber overmold for added protection; general-purpose puck for assets of all sizes",
     useCases: "Cargo tracking, general asset tracking (tools, equipment, containers)",
+    marketplaceUrl: "https://marketplace.geotab.com/solutions/e7-puck-ble-tag/",
     image: "https://storage.googleapis.com/geotab_mp_images/solution_logos/33a785e0-74ff-4977-865c-0f568d429982.png"
   },
   {
@@ -1567,6 +1607,7 @@ const products = [
     certifications: "N/A",
     keyDifferentiator: "Smallest form factor in Link Labs lineup; built-in accelerometer and motion detection for accurate tracking; up to 7-year battery in XLE mode",
     useCases: "Tool tracking, small equipment, high-density asset environments",
+    marketplaceUrl: "https://marketplace.geotab.com/solutions/e8-puck-ble-tag/",
     image: "https://storage.googleapis.com/geotab_mp_images/solution_logos/78e075dd-092b-4dfd-b433-2318137238d5.png"
   },
   {
@@ -1600,6 +1641,7 @@ const products = [
     certifications: "N/A",
     keyDifferentiator: "Credit-card badge form factor for personnel tracking; built-in panic/SOS button for emergency alerting; optional RFID integration",
     useCases: "Personnel management, workplace safety, hospital staff/patient tracking, indoor positioning",
+    marketplaceUrl: "https://marketplace.geotab.com/solutions/c10-badge-ble-tag/",
     image: ""
   },
   {
@@ -1633,6 +1675,7 @@ const products = [
     certifications: "N/A",
     keyDifferentiator: "Real-time temperature and humidity monitoring with data logging (200 records); purpose-built for cold chain and environmental compliance",
     useCases: "Cold chain monitoring, pharmaceutical/food transport, refrigerated trailer monitoring, cargo temperature tracking",
+    marketplaceUrl: "https://marketplace.geotab.com/solutions/s1-temperature-ble-sensor/",
     image: "https://storage.googleapis.com/geotab_mp_images/solution_logos/e3701c46-5d1e-4e7a-92e4-c1a3fcc8be64.png"
   },
   {
@@ -1666,6 +1709,7 @@ const products = [
     certifications: "N/A",
     keyDifferentiator: "Purpose-built door/window open-close detection with magnetic Hall-effect sensor; tamper alerts; stores 2,048 local event records for offline logging",
     useCases: "Trailer door monitoring, cargo container access, cold chain door events, security/access monitoring",
+    marketplaceUrl: "https://marketplace.geotab.com/solutions/openclose-ble-sensor/",
     image: "https://storage.googleapis.com/geotab_mp_images/solution_logos/a7047f51-4365-4d03-a6c0-57abbab15677.png"
   },
   {
@@ -1699,6 +1743,7 @@ const products = [
     certifications: "N/A",
     keyDifferentiator: "Transforms any GO-equipped vehicle into a BLE beacon scanner; compatible with any public-MAC BLE beacon (no vendor lock-in); reads up to 200 beacons simultaneously",
     useCases: "Tool/equipment inventory tracking, in-cab sensor monitoring, last-known BLE asset location",
+    marketplaceUrl: "https://marketplace.geotab.com/solutions/iox-bt/",
     image: "https://storage.googleapis.com/geotab_mp_images/solution_logos/7131d1fe-c5f6-4600-a470-bcf42f4f87a8.png"
   }
 ];
@@ -1769,6 +1814,10 @@ function renderCards() {
         <div class="quick-specs">
           ${p.pills.map((pill, i) => `<span class="spec-pill ${p.pillClasses[i] || ''}">${pill}</span>`).join('')}
         </div>
+        ${p.marketplaceUrl ? `<a class="mp-link" href="${p.marketplaceUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">
+          <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+          View on Marketplace
+        </a>` : ''}
       </div>
     `).join('');
 
