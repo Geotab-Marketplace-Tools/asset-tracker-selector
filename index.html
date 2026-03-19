@@ -891,12 +891,59 @@
     .product-grid { grid-template-columns: 1fr; }
   }
 
+  /* ── Export PDF button ── */
+  .export-pdf-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    background: var(--geotab-dark);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.15s;
+    margin-right: 8px;
+  }
+  .export-pdf-btn:hover { background: var(--geotab-blue); }
+  /* Print-only header inside modal */
+  .print-header { display: none; }
   /* ── Print styles ── */
   @media print {
-    header, .controls, .compare-bar { display: none; }
-    .modal-overlay { position: static; display: flex !important; background: none; padding: 0; }
-    .modal { box-shadow: none; max-width: 100%; }
-    .comparison-table th, .comparison-table td { font-size: 11px; padding: 6px 8px; }
+    @page { margin: 1.2cm; }
+    /* Hide everything except the comparison modal */
+    header, .controls, .compare-bar, #pill-tooltip,
+    .quiz-overlay, .seg-overlay, .contact-overlay,
+    .products-section, .info-banner { display: none !important; }
+    /* Show the modal cleanly */
+    body.printing-comparison .modal-overlay {
+      position: static !important;
+      display: block !important;
+      background: none !important;
+      padding: 0 !important;
+    }
+    body.printing-comparison .modal {
+      box-shadow: none !important;
+      max-width: 100% !important;
+      width: 100% !important;
+      max-height: none !important;
+      overflow: visible !important;
+      border-radius: 0 !important;
+      animation: none !important;
+    }
+    .modal-close, .export-pdf-btn, .modal-selectors, .modal-cta { display: none !important; }
+    .comparison-body { overflow: visible !important; }
+    .print-header { display: block !important; margin-bottom: 14px; padding: 0 4px; }
+    .print-header-title { font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
+    .print-header-sub { font-size: 10px; color: #64748b; margin-bottom: 8px; }
+    .print-header-rule { border: none; border-top: 2px solid #0066CC; }
+    .comparison-table { width: 100% !important; border-collapse: collapse !important; }
+    .comparison-table th, .comparison-table td { font-size: 10.5px !important; padding: 5px 8px !important; }
+    .comparison-table th img, .comparison-table td img { max-height: 70px !important; }
+    .comparison-table .section-row td { font-size: 9px !important; }
   }
 
   /* Helper */
@@ -1014,10 +1061,21 @@
   <div class="modal">
     <div class="modal-header">
       <h2>Side-by-Side Comparison</h2>
-      <button class="modal-close" onclick="closeModal()">&times;</button>
+      <div style="display:flex;align-items:center;gap:4px;">
+        <button class="export-pdf-btn" onclick="exportComparison()">
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17v3a1 1 0 001 1h16a1 1 0 001-1v-3M3 7V4a1 1 0 011-1h16a1 1 0 011 1v3"/></svg>
+          Export PDF
+        </button>
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+      </div>
     </div>
     <div class="modal-selectors" id="modalSelectors"></div>
     <div class="comparison-body">
+      <div class="print-header">
+        <div class="print-header-title">Asset Tracker Comparison</div>
+        <div class="print-header-sub">Geotab Marketplace &mdash; geotab-marketplace-tools.github.io/asset-tracker-selector</div>
+        <hr class="print-header-rule">
+      </div>
       <table class="comparison-table" id="comparisonTable"></table>
     </div>
     <div class="modal-cta">
@@ -2260,6 +2318,13 @@ function openComparison() {
 function closeModal() {
   document.getElementById('modalOverlay').classList.remove('open');
   document.body.style.overflow = '';
+}
+
+function exportComparison() {
+  document.body.classList.add('printing-comparison');
+  window.print();
+  // Clean up after the print dialog closes (fires immediately in most browsers)
+  setTimeout(() => document.body.classList.remove('printing-comparison'), 500);
 }
 
 // Close on overlay click
