@@ -39,10 +39,12 @@
   header {
     background: linear-gradient(135deg, var(--geotab-dark) 0%, var(--geotab-blue) 50%, var(--geotab-accent) 100%);
     color: #fff;
-    padding: 32px 24px 28px;
-    text-align: center;
+    padding: 28px 32px;
     position: relative;
     overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: 24px;
   }
   header::before {
     content: '';
@@ -54,16 +56,28 @@
     background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.06) 0%, transparent 50%);
     pointer-events: none;
   }
+  .header-logo-wrap {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    z-index: 1;
+  }
+  .header-logo-img {
+    height: 44px;
+    width: auto;
+    display: block;
+  }
+  .header-center {
+    flex: 1;
+    text-align: center;
+    z-index: 1;
+  }
+  .header-spacer {
+    flex-shrink: 0;
+    width: 180px;
+  }
   header h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 6px; }
   header p { font-size: 15px; opacity: 0.85; max-width: 600px; margin: 0 auto; }
-  .geotab-logo {
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    opacity: 0.7;
-    margin-bottom: 10px;
-  }
 
   /* ── Controls Bar ── */
   .controls {
@@ -150,6 +164,22 @@
   }
   .product-card:hover { border-color: var(--geotab-accent); box-shadow: var(--shadow-md); transform: translateY(-2px); }
   .product-card.selected { border-color: var(--geotab-blue); background: var(--geotab-light); }
+  .card-image {
+    height: 130px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+  .card-image img {
+    max-height: 110px;
+    max-width: 100%;
+    width: auto;
+    object-fit: contain;
+  }
   .product-card .card-header {
     display: flex;
     justify-content: space-between;
@@ -538,7 +568,10 @@
 
   /* ── Responsive ── */
   @media (max-width: 768px) {
+    header { flex-direction: column; gap: 12px; padding: 20px 16px; text-align: center; }
     header h1 { font-size: 22px; }
+    .header-spacer { display: none; }
+    .header-logo-img { height: 36px; }
     .product-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
     .product-card { padding: 12px; }
     .compare-bar { flex-direction: column; gap: 10px; text-align: center; }
@@ -577,9 +610,36 @@
 <body>
 
 <header>
-  <div class="geotab-logo">Geotab Marketplace</div>
-  <h1>Asset Tracker Selector</h1>
-  <p>Compare "Order Now" asset tracking solutions side-by-side. Select up to 4 products to compare specifications, features, and capabilities.</p>
+  <div class="header-logo-wrap">
+    <svg width="213" height="40" viewBox="0 0 550 115" fill="none" aria-label="Geotab Marketplace" xmlns="http://www.w3.org/2000/svg">
+      <path d="M220.755 31.7086H246.155V29.2086H225.355V19.8086H245.255V17.3086H225.355V8.70864H246.155V6.20864H220.755V31.7086Z" fill="white"/>
+      <path d="M278.655 18.9087C278.655 24.1087 278.155 27.2087 277.155 28.1087C276.155 29.0087 272.455 29.4087 266.255 29.4087C260.055 29.4087 256.355 28.9087 255.355 28.1087C254.355 27.2087 253.855 24.1087 253.855 18.9087C253.855 13.7087 254.356 10.6086 255.456 9.70864C256.556 8.80864 260.155 8.40865 266.355 8.40865C271.755 8.40865 275.155 8.80866 276.655 9.50866C278.155 10.2087 278.855 12.0086 278.855 14.8086L278.655 18.9087ZM280.255 8.00866C278.455 6.60866 273.655 5.90865 266.255 5.90865C259.855 5.90865 255.355 6.50865 253.055 7.80865C250.655 9.00865 249.456 11.4086 249.456 14.8086L249.355 17.2086V19.0087C249.355 24.9087 250.255 28.5087 252.055 30.0087C253.855 31.4087 258.655 32.1087 266.155 32.1087C273.655 32.1087 278.455 31.4087 280.255 30.0087C281.955 28.6087 282.956 24.8086 282.956 18.7086C283.056 13.0086 282.055 9.50866 280.255 8.00866Z" fill="white"/>
+      <path d="M314.956 6.10867H284.855V9.00866H297.655V31.7086H302.255V9.00866H314.956V6.10867Z" fill="white"/>
+      <path d="M319.655 24.0087L328.155 8.70864L336.755 24.0087H319.655ZM331.155 6.10867H324.855L310.355 31.7086H315.155L318.155 26.3086H337.956L340.956 31.7086H345.755L330.956 6.20864L331.155 6.10867Z" fill="white"/>
+      <path d="M374.455 28.4087C373.455 29.0087 371.155 29.2086 367.855 29.2086H354.555V20.0087H365.855C370.455 20.0087 373.355 20.3086 374.455 20.8086C375.555 21.3086 375.955 22.7087 375.955 24.9087C375.955 26.6087 375.455 27.8087 374.455 28.4087ZM354.555 8.70864H367.355C370.455 8.70864 372.555 9.00865 373.455 9.40865C374.355 9.90865 374.855 11.0087 374.855 12.6087C374.855 14.5087 374.355 15.8087 373.355 16.4087C372.255 17.0087 369.955 17.2086 366.255 17.2086H354.555V8.70864ZM374.255 18.3086C377.455 17.5086 379.055 15.7087 379.055 12.9087C379.055 10.1087 378.355 8.20865 376.755 7.40865C375.255 6.50865 372.055 6.10867 367.255 6.10867H349.755V31.7086H369.155C373.155 31.7086 376.055 31.1087 377.755 30.0087C379.355 28.9087 380.255 27.0086 380.255 24.2086C380.355 21.1086 378.255 19.0086 374.255 18.3086Z" fill="white"/>
+      <path d="M199.455 18.9087V21.5087H212.155V23.0087V23.1087C212.155 25.9087 211.555 27.8087 210.555 28.4087C209.455 29.1087 206.555 29.4087 201.855 29.4087C195.655 29.4087 191.855 29.0086 190.455 28.3086C189.055 27.6086 188.355 25.6087 188.355 22.5087V18.9087L188.455 15.5087C188.455 12.4087 189.055 10.4087 190.355 9.60867C191.655 8.80867 194.855 8.40865 199.955 8.40865C205.455 8.40865 208.955 8.70867 210.255 9.10867C211.555 9.60867 212.055 10.9087 212.055 12.9087V13.6087H216.555V12.6087C216.555 9.80867 215.555 7.90866 213.655 7.00866C211.755 6.20866 207.355 5.80865 200.755 5.80865C194.155 5.80865 189.655 6.40864 187.455 7.70864C185.255 8.90864 184.155 11.5086 184.155 15.3086V21.3086C184.155 25.8086 185.155 28.7087 187.155 30.0087C189.155 31.3087 193.655 31.9087 200.555 31.9087C207.855 31.9087 212.455 31.3086 214.255 30.3086C215.955 29.2086 216.755 26.6087 216.855 22.6087V18.9087H199.455Z" fill="white"/>
+      <path d="M56.6014 0.614937L0.439453 88.2671L25.8678 104.56L82.0298 16.9078L56.6014 0.614937Z" fill="#0078D3"/>
+      <path d="M114.824 0.653054L58.6621 88.3053L84.0905 104.598L140.252 16.9459L114.824 0.653054Z" fill="#00AEFF"/>
+      <path d="M140.255 16.8086C135.655 24.0086 133.155 32.3087 133.155 41.0087C133.155 56.3087 140.855 70.4086 153.755 78.7086L137.355 104.109C115.755 90.2087 102.855 66.6087 102.855 40.9087C102.855 26.5087 106.955 12.5087 114.655 0.408653" fill="#00AA00"/>
+      <path d="M114.755 0.508659C107.055 12.6087 102.955 26.5087 102.955 40.9087C102.955 50.1087 104.655 59.0086 107.755 67.3086L140.255 16.7086L114.755 0.508659Z" fill="white"/>
+      <path d="M196.355 53.4087L209.955 89.6087L223.555 53.4087H234.155V100.609H225.955V85.0087L226.755 64.2086L212.755 100.609H206.855L192.955 64.2086L193.755 85.0087V100.609H185.555V53.4087H196.355Z" fill="white"/>
+      <path d="M263.555 100.609C263.255 99.9087 262.955 98.8086 262.655 97.3086C260.155 99.9086 257.055 101.209 253.455 101.209C249.955 101.209 247.055 100.209 244.855 98.2086C242.655 96.2086 241.555 93.7086 241.555 90.7086C241.555 87.0086 242.955 84.1087 245.755 82.1087C248.555 80.1087 252.555 79.1087 257.655 79.1087H262.455V76.9087C262.455 75.1087 261.955 73.6087 260.955 72.5087C259.955 71.4087 258.355 70.9087 256.355 70.9087C254.555 70.9087 253.055 71.3086 251.955 72.2086C250.855 73.1086 250.255 74.2087 250.255 75.6087H242.355C242.355 73.7087 242.955 71.9086 244.255 70.2086C245.555 68.5086 247.255 67.2086 249.455 66.3086C251.655 65.3086 254.055 64.9087 256.755 64.9087C260.855 64.9087 264.155 65.9087 266.555 68.0087C268.955 70.1087 270.255 73.0086 270.355 76.7086V92.5087C270.355 95.7087 270.755 98.2087 271.655 100.109V100.709H263.555V100.609ZM254.955 94.9087C256.555 94.9087 257.955 94.5086 259.355 93.8086C260.755 93.0086 261.755 92.0086 262.455 90.8086V84.2086H258.155C255.255 84.2086 253.055 84.7086 251.555 85.7086C250.055 86.7086 249.355 88.2087 249.355 90.0087C249.355 91.5087 249.855 92.7087 250.855 93.6087C251.855 94.5087 253.255 94.9087 254.955 94.9087Z" fill="white"/>
+      <path d="M297.255 72.7086C296.255 72.5086 295.155 72.4087 294.055 72.4087C290.455 72.4087 288.055 73.8087 286.755 76.6087V100.609H278.854V65.5087H286.354L286.555 69.4087C288.455 66.3087 291.055 64.8086 294.455 64.8086C295.555 64.8086 296.555 65.0086 297.255 65.3086V72.7086Z" fill="white"/>
+      <path d="M313.955 85.6087L310.455 89.2086V100.709H302.555V50.9087H310.455V79.7086L312.955 76.6087L322.655 65.7086H332.155L319.155 80.3086L333.555 100.809H324.455L313.955 85.6087Z" fill="white"/>
+      <path d="M350.855 101.309C345.855 101.309 341.855 99.7087 338.655 96.6087C335.455 93.5087 333.955 89.3087 333.955 84.0087V83.0087C333.955 79.5087 334.655 76.4087 335.955 73.6087C337.355 70.8087 339.155 68.7086 341.655 67.2086C344.155 65.7086 346.855 64.9087 349.855 64.9087C354.655 64.9087 358.355 66.4087 360.955 69.5087C363.555 72.5087 364.855 76.9087 364.855 82.4087V85.6087H341.955C342.155 88.5087 343.155 90.8087 344.855 92.5087C346.555 94.2087 348.655 95.0087 351.255 95.0087C354.855 95.0087 357.855 93.5087 360.055 90.6087L364.355 94.7086C362.955 96.8086 361.055 98.4087 358.755 99.6087C356.355 100.709 353.755 101.309 350.855 101.309ZM349.855 71.2086C347.655 71.2086 345.955 72.0087 344.655 73.5087C343.355 75.0087 342.455 77.1086 342.155 79.8086H357.155V79.2086C356.955 76.6086 356.255 74.6086 355.055 73.2086C353.755 71.9086 352.055 71.2086 349.855 71.2086Z" fill="white"/>
+      <path d="M382.055 57.0087V65.5087H388.255V71.3086H382.055V90.9087C382.055 92.2087 382.354 93.2086 382.854 93.8086C383.354 94.4086 384.354 94.7086 385.654 94.7086C386.554 94.7086 387.455 94.6087 388.455 94.4087V100.509C386.655 101.009 384.955 101.209 383.255 101.209C377.155 101.209 374.154 97.9086 374.154 91.2086V71.3086H368.354V65.5087H374.154V57.0087H382.055Z" fill="white"/>
+      <path d="M426.355 83.4087C426.355 88.8087 425.155 93.2087 422.655 96.4087C420.155 99.6087 416.855 101.309 412.755 101.309C408.855 101.309 405.855 100.009 403.555 97.5087V114.109H395.555V65.5087H402.855L403.155 69.1087C405.455 66.3087 408.655 64.9087 412.555 64.9087C416.855 64.9087 420.155 66.5086 422.655 69.7086C425.155 72.9086 426.355 77.3087 426.355 83.0087V83.4087ZM418.455 82.7086C418.455 79.2086 417.755 76.4087 416.355 74.4087C414.955 72.3087 412.955 71.3086 410.355 71.3086C407.155 71.3086 404.855 72.6086 403.455 75.3086V90.9087C404.855 93.6087 407.255 95.0087 410.455 95.0087C412.955 95.0087 414.955 94.0087 416.355 92.0087C417.755 89.9087 418.455 86.8086 418.455 82.7086Z" fill="white"/>
+      <path d="M441.054 100.609H433.154V50.8086H441.054V100.609Z" fill="white"/>
+      <path d="M470.455 100.609C470.155 99.9087 469.855 98.8086 469.555 97.3086C467.055 99.9086 463.955 101.209 460.355 101.209C456.855 101.209 453.955 100.209 451.755 98.2086C449.555 96.2086 448.455 93.7086 448.455 90.7086C448.455 87.0086 449.855 84.1087 452.655 82.1087C455.455 80.1087 459.455 79.1087 464.555 79.1087H469.355V76.9087C469.355 75.1087 468.855 73.6087 467.855 72.5087C466.855 71.4087 465.255 70.9087 463.255 70.9087C461.455 70.9087 459.955 71.3086 458.855 72.2086C457.755 73.1086 457.155 74.2087 457.155 75.6087H449.255C449.255 73.7087 449.855 71.9086 451.155 70.2086C452.455 68.5086 454.155 67.2086 456.355 66.3086C458.555 65.3086 460.955 64.9087 463.755 64.9087C467.855 64.9087 471.155 65.9087 473.555 68.0087C475.955 70.1087 477.255 73.0086 477.355 76.7086V92.5087C477.355 95.7087 477.755 98.2087 478.655 100.109V100.709H470.455V100.609ZM461.755 94.9087C463.355 94.9087 464.755 94.5086 466.155 93.8086C467.555 93.0086 468.555 92.0086 469.255 90.8086V84.2086H464.955C462.055 84.2086 459.855 84.7086 458.355 85.7086C456.855 86.7086 456.155 88.2087 456.155 90.0087C456.155 91.5087 456.655 92.7087 457.655 93.6087C458.755 94.5087 460.155 94.9087 461.755 94.9087Z" fill="white"/>
+      <path d="M499.755 95.0087C501.755 95.0087 503.354 94.4086 504.654 93.3086C505.954 92.2086 506.655 90.7087 506.755 89.0087H514.154C514.054 91.2087 513.354 93.2087 512.154 95.1087C510.854 97.0087 509.155 98.5087 506.955 99.6087C504.755 100.709 502.454 101.309 499.854 101.309C494.954 101.309 491.054 99.7087 488.154 96.5087C485.254 93.3087 483.854 88.9086 483.854 83.3086V82.5087C483.854 77.2087 485.254 72.9086 488.154 69.7086C491.054 66.5086 494.954 64.9087 499.854 64.9087C504.054 64.9087 507.455 66.1087 510.055 68.6087C512.655 71.0087 514.054 74.2086 514.154 78.2086H506.755C506.655 76.2086 505.954 74.5086 504.654 73.2086C503.354 71.9086 501.755 71.3086 499.755 71.3086C497.155 71.3086 495.254 72.2087 493.854 74.1087C492.454 76.0087 491.755 78.8087 491.755 82.5087V83.8086C491.755 87.6086 492.454 90.4086 493.854 92.3086C495.254 94.2086 497.155 95.0087 499.755 95.0087Z" fill="white"/>
+      <path d="M535.554 101.309C530.554 101.309 526.554 99.7087 523.354 96.6087C520.154 93.5087 518.654 89.3087 518.654 84.0087V83.0087C518.654 79.5087 519.354 76.4087 520.654 73.6087C522.054 70.8087 523.854 68.7086 526.354 67.2086C528.854 65.7086 531.554 64.9087 534.554 64.9087C539.354 64.9087 543.054 66.4087 545.654 69.5087C548.254 72.5087 549.554 76.9087 549.554 82.4087V85.6087H526.654C526.854 88.5087 527.854 90.8087 529.554 92.5087C531.254 94.2087 533.354 95.0087 535.954 95.0087C539.554 95.0087 542.554 93.5087 544.754 90.6087L549.054 94.7086C547.654 96.8086 545.754 98.4087 543.454 99.6087C541.154 100.709 538.454 101.309 535.554 101.309ZM534.654 71.2086C532.454 71.2086 530.754 72.0087 529.454 73.5087C528.154 75.0087 527.254 77.1086 526.954 79.8086H541.954V79.2086C541.754 76.6086 541.054 74.6086 539.854 73.2086C538.554 71.9086 536.754 71.2086 534.654 71.2086Z" fill="white"/>
+    </svg>
+  </div>
+  <div class="header-center">
+    <h1>Asset Tracker Selector</h1>
+    <p>Compare "Order Now" asset tracking solutions side-by-side. Select up to 4 products to compare specifications, features, and capabilities.</p>
+  </div>
+  <div class="header-spacer"></div>
 </header>
 
 <div class="controls">
@@ -677,7 +737,8 @@ const products = [
     regions: "USA, Canada, Europe, UK, Australia & NZ",
     certifications: "UL 94 V-0 housing",
     keyDifferentiator: "Geotab's own branded tracker with deepest MyGeotab integration and OTA firmware updates",
-    useCases: "Non-powered trailers, construction equipment, generators, containers, seasonal assets"
+    useCases: "Non-powered trailers, construction equipment, generators, containers, seasonal assets",
+    image: "https://storage.googleapis.com/geotab_mp_images/solution_logos/ebdba5df-3580-46c3-949a-86614b32c0c8.png"
   },
   {
     id: "go-anywhere-plus",
@@ -709,7 +770,8 @@ const products = [
     regions: "USA, Canada (Q2 2026); global rollout to follow",
     certifications: "NDAA compliant; TAA compliant; FIPS 140-3; FedRAMP authorized",
     keyDifferentiator: "First commercial Geotab IoT device with Starlink Direct to Cell satellite; eliminates need for separate satellite hardware; hybrid wired + battery backup; works in cellular dead zones",
-    useCases: "High-value mixed fleets, trailers, heavy equipment, generators, remote jobsites, theft recovery, construction"
+    useCases: "High-value mixed fleets, trailers, heavy equipment, generators, remote jobsites, theft recovery, construction",
+    image: "https://storage.googleapis.com/geotab_mp_images/solution_logos/aee68635-47bc-4644-8452-be89cc0f8e5b.png"
   },
   {
     id: "oyster3",
@@ -741,7 +803,8 @@ const products = [
     regions: "USA, Canada",
     certifications: "AES-256 encryption",
     keyDifferentiator: "5-constellation GPS with Sony chipset; fastest cold-start acquisition in Digital Matter lineup",
-    useCases: "Trailers, containers, skip bins, equipment, vehicles"
+    useCases: "Trailers, containers, skip bins, equipment, vehicles",
+    image: "https://storage.googleapis.com/geotab_mp_images/solution_resources/9e834932-e1c0-498b-9ed5-263705f22265.jpg"
   },
   {
     id: "remora3",
@@ -773,7 +836,8 @@ const products = [
     regions: "USA, Canada",
     certifications: "N/A",
     keyDifferentiator: "Longest-life battery tracker on Marketplace (20 yrs); BLE 5.2 gateway for tagged asset management; D-cell LTC for extreme temps",
-    useCases: "Long-life deployments, high-value equipment, remote/challenging environments"
+    useCases: "Long-life deployments, high-value equipment, remote/challenging environments",
+    image: "https://storage.googleapis.com/geotab_mp_images/solution_resources/955f9f71-033d-4f99-a76f-6607b176713b.jpg"
   },
   {
     id: "yabby3",
@@ -805,7 +869,8 @@ const products = [
     regions: "USA, Canada",
     certifications: "N/A",
     keyDifferentiator: "Smallest & lightest long-life GPS tracker on the Marketplace; uses AAA batteries for ultra-compact form",
-    useCases: "Tools, inventory pallets, cargo, returnable assets, light equipment"
+    useCases: "Tools, inventory pallets, cargo, returnable assets, light equipment",
+    image: "https://storage.googleapis.com/geotab_mp_images/solution_resources/27e6f276-c15a-4cd9-a9a1-42b204ce2e46.jpg"
   },
   {
     id: "oyster-edge",
@@ -837,7 +902,8 @@ const products = [
     regions: "USA, Canada",
     certifications: "N/A",
     keyDifferentiator: "WiFi scanning for indoor positioning; BLE 5.2 gateway relays data from nearby BLE tags; seamless indoor/outdoor transition",
-    useCases: "Indoor/outdoor assets, BLE tagged asset management, warehousing"
+    useCases: "Indoor/outdoor assets, BLE tagged asset management, warehousing",
+    image: "https://storage.googleapis.com/geotab_mp_images/solution_resources/82d15c78-b5ce-4da2-a41a-5bb987932917.jpg"
   },
   {
     id: "yabby-edge",
@@ -869,7 +935,8 @@ const products = [
     regions: "USA, Canada",
     certifications: "N/A",
     keyDifferentiator: "Compact Yabby form factor with multi-technology indoor/outdoor location (GNSS + WiFi + Cell)",
-    useCases: "Compact assets, indoor/outdoor mixed environments, cargo, pallets"
+    useCases: "Compact assets, indoor/outdoor mixed environments, cargo, pallets",
+    image: "https://storage.googleapis.com/geotab_mp_images/solution_resources/2ab9602a-cd7a-4366-8a9b-900bb0d0f187.jpg"
   },
   {
     id: "barra-edge",
@@ -901,7 +968,8 @@ const products = [
     regions: "USA, Canada",
     certifications: "AES-256 encryption",
     keyDifferentiator: "Ultra-slim profile (21mm thick) for narrow surfaces; magnetic switch activation and tamper detection; lowest profile in Digital Matter lineup",
-    useCases: "Covert installation on thin assets, field services, transportation & logistics"
+    useCases: "Covert installation on thin assets, field services, transportation & logistics",
+    image: "https://storage.googleapis.com/geotab_mp_images/solution_resources/624eb0f6-5dbb-4003-ab2d-1a330f2d8ae3.jpg"
   },
   {
     id: "g70",
@@ -933,7 +1001,8 @@ const products = [
     regions: "USA, Canada",
     certifications: "N/A",
     keyDifferentiator: "Only wired tracker in BlueArrow lineup; -168 dBm GPS sensitivity (most sensitive); PTO and engine hours via 3 digital inputs",
-    useCases: "Powered vehicles and equipment, mixed fleet wired tracking, PTO-enabled machinery"
+    useCases: "Powered vehicles and equipment, mixed fleet wired tracking, PTO-enabled machinery",
+    image: "https://storage.googleapis.com/geotab_mp_images/solution_resources/e2b41197-864a-4e6f-acfc-ed367790d334.jpg"
   },
   {
     id: "bemini",
@@ -965,7 +1034,8 @@ const products = [
     regions: "USA, Canada",
     certifications: "CE, PTCRB, FCC/IC",
     keyDifferentiator: "Smallest and lightest tracker (50g, Tic-Tac size); richest onboard sensor suite (temp/humidity/pressure/light); USB rechargeable; WiFi indoor positioning",
-    useCases: "Packages, temperature-sensitive goods, forklifts, light towers, trailers, small/medium tools"
+    useCases: "Packages, temperature-sensitive goods, forklifts, light towers, trailers, small/medium tools",
+    image: "https://storage.googleapis.com/geotab_mp_images/solution_logos/aee12adf-7efb-4eb5-be64-f216106256ec.png"
   },
   {
     id: "magtrack-pro",
@@ -997,7 +1067,8 @@ const products = [
     regions: "Global (Africa, Asia, Australia/NZ, Canada, Europe, Middle East, UK, USA)",
     certifications: "Thatcham S7 certified (insurance-grade theft recovery)",
     keyDifferentiator: "Only Thatcham S7-certified tracker on Marketplace; multi-network (satellite + cellular + LoRa) for maximum coverage; discreet magnetic design; 1-hour national recovery SLA (UK)",
-    useCases: "Agricultural machinery, construction equipment, trailers, power units, high-theft-risk assets"
+    useCases: "Agricultural machinery, construction equipment, trailers, power units, high-theft-risk assets",
+    image: "https://storage.googleapis.com/geotab_mp_images/solution_resources/ece6336d-dfaf-4660-a27b-40d4709b15c6.png"
   },
   {
     id: "tag-iq-card",
@@ -1029,7 +1100,8 @@ const products = [
     regions: "Global (Africa, Asia, Australia/NZ, Canada, Europe, Middle East, UK, USA)",
     certifications: "Encrypted location data",
     keyDifferentiator: "Credit-card form factor; no per-device fees; unlimited tags and users per account; QR code quick setup",
-    useCases: "Personal valuables, portable tools, lightweight asset tagging"
+    useCases: "Personal valuables, portable tools, lightweight asset tagging",
+    image: "https://storage.googleapis.com/geotab_mp_images/solution_logos/5a69f223-77fa-4081-b04e-576af6468bf4.png"
   },
   // Solar-Powered
   {
@@ -1062,7 +1134,8 @@ const products = [
     regions: "USA, Canada",
     certifications: "FCC, PTCRB",
     keyDifferentiator: "Industry-leading 10-year solar battery; SolarNet 8000 adds integrated cargo camera and TPMS; deep sensor ecosystem (PSI, ConMet, TSE, SKF, Compology, etc.)",
-    useCases: "Dry trailers, chassis, containers, Class 8, construction equipment, boats"
+    useCases: "Dry trailers, chassis, containers, Class 8, construction equipment, boats",
+    image: "https://storage.googleapis.com/geotab_mp_images/solution_logos/ac30e684-925f-4a83-84f9-de7e12893867.png"
   },
   {
     id: "stealthnet",
@@ -1094,7 +1167,8 @@ const products = [
     regions: "USA, Canada",
     certifications: "N/A",
     keyDifferentiator: "Covert design for hidden placement; ultra-sensitive -162 dBm GPS tracking; works with full Phillips Connect sensor ecosystem",
-    useCases: "Covert trailer tracking, theft deterrence, assets without constant power"
+    useCases: "Covert trailer tracking, theft deterrence, assets without constant power",
+    image: "https://storage.googleapis.com/geotab_mp_images/solution_resources/b47af58e-81b0-420e-b108-9e2bcf91d812.png"
   },
   {
     id: "ct-1000",
@@ -1126,7 +1200,8 @@ const products = [
     regions: "Global (USA, Canada, Europe, UK, 180 countries)",
     certifications: "CE Mark; ATEX Zone 2 certified",
     keyDifferentiator: "ATEX Zone 2 certified for hazardous environments; global SIM with 565 networks in 180 countries; fastest install (1 minute)",
-    useCases: "Intermodal containers, dry trailers, maritime, hazardous environments"
+    useCases: "Intermodal containers, dry trailers, maritime, hazardous environments",
+    image: "https://storage.googleapis.com/geotab_mp_images/solution_logos/1003c085-44bd-470c-9e6d-3e2527e98322.jpg"
   },
   {
     id: "gt-1220",
@@ -1158,7 +1233,8 @@ const products = [
     regions: "USA, Canada",
     certifications: "MIL-STD-810G (shock); AAR S-9401 (rail vibration); PTCRB, FCC, IC, CE",
     keyDifferentiator: "MIL-STD-810G shock & AAR rail vibration certified; dual BLE antennas; deep sensor ecosystem (wireless door, TPMS, tractor ID, cargo cameras)",
-    useCases: "Dry trailers, containers, transport assets, sensor-heavy fleet operations"
+    useCases: "Dry trailers, containers, transport assets, sensor-heavy fleet operations",
+    image: "https://storage.googleapis.com/geotab_mp_images/solution_logos/6f197015-d570-4106-bfef-36791e47a500.jpg"
   },
   {
     id: "gt-1230",
@@ -1190,7 +1266,8 @@ const products = [
     regions: "USA, Canada",
     certifications: "N/A",
     keyDifferentiator: "Integrated cargo detection sensor (unique vs GT 1220); smart asset technology for scheduling & routing; improved solar efficiency",
-    useCases: "Dry trailers with cargo monitoring, detention billing, theft prevention"
+    useCases: "Dry trailers with cargo monitoring, detention billing, theft prevention",
+    image: "https://storage.googleapis.com/geotab_mp_images/solution_resources/0eea87ea-6292-44a6-988e-ca4abf31f93f.jpg"
   },
   {
     id: "tt600",
@@ -1222,7 +1299,8 @@ const products = [
     regions: "USA, Canada, Australia & New Zealand",
     certifications: "FCC, IC; SAE J1455 (vibration); ISO 16750-3 (shock); ISO 16750-4 (salt spray); Secure Boot; TLS/SSL",
     keyDifferentiator: "One of the largest and most efficient solar cells on market; 6-axis IMU (vs. 3-axis in most competitors) detects motion vs. parked to preserve battery; 4-fastener install",
-    useCases: "Trailer tracking, shipping containers, generators, construction equipment, flatbeds, yard management, cargo theft prevention"
+    useCases: "Trailer tracking, shipping containers, generators, construction equipment, flatbeds, yard management, cargo theft prevention",
+    image: "https://storage.googleapis.com/geotab_mp_images/solution_logos/3f3af7ed-9660-40a3-a7f5-6ab77212e8a7.png"
   },
   {
     id: "tt603",
@@ -1254,7 +1332,8 @@ const products = [
     regions: "USA, Canada",
     certifications: "FCC, IC; SAE J1455; ISO 16750-3; ISO 16750-4; Secure Boot; TLS/SSL",
     keyDifferentiator: "Expanded I/O variant of TT600 with built-in wired connector (CAN, RS-232, 1-Wire) for direct door sensor, temperature probe, and tractor power detection \u2014 no external accessories needed",
-    useCases: "Refrigerated trailers, temperature-sensitive cargo (pharma, food), door-monitored assets, containers, construction equipment, yard management"
+    useCases: "Refrigerated trailers, temperature-sensitive cargo (pharma, food), door-monitored assets, containers, construction equipment, yard management",
+    image: "https://storage.googleapis.com/geotab_mp_images/solution_logos/ac6f08ab-32d6-43ed-bce6-f0e4dbb2d600.png"
   },
   // Satellite
   {
@@ -1287,7 +1366,8 @@ const products = [
     regions: "Global (satellite coverage)",
     certifications: "Inmarsat Type Approval; FCC/IC; CE RED; ATEX Zone 2; CID2; RoHS; WEEE; HERO (US military-grade)",
     keyDifferentiator: "Only satellite-based tracker on Marketplace; ATEX Zone 2 + HERO military-grade certified; OGx global coverage where cellular fails",
-    useCases: "Remote areas without cellular, high-value shipments, railcars, agriculture, oil & gas"
+    useCases: "Remote areas without cellular, high-value shipments, railcars, agriculture, oil & gas",
+    image: "https://storage.googleapis.com/geotab_mp_images/solution_logos/533aff8b-e764-4d7f-a6aa-cb7d64866dc0.jpg"
   },
   // BLE Tags
   {
@@ -1320,7 +1400,8 @@ const products = [
     regions: "USA, Canada",
     certifications: "N/A",
     keyDifferentiator: "5-technology adaptive location blending (GPS + WiFi + Cell + PoLTE + Indoor); dynamically selects best technology to optimize battery and accuracy",
-    useCases: "Trailer/cargo visibility, returnable assets, supply chain, indoor/outdoor seamless tracking"
+    useCases: "Trailer/cargo visibility, returnable assets, supply chain, indoor/outdoor seamless tracking",
+    image: "https://storage.googleapis.com/geotab_mp_images/solution_logos/4241e582-10d5-44fb-928e-78c69c84fdab.png"
   },
   {
     id: "supertag-plus",
@@ -1352,7 +1433,8 @@ const products = [
     regions: "USA, Canada",
     certifications: "N/A",
     keyDifferentiator: "Longest battery life (7 yrs) in the AirFinder SuperTag line with same 5-technology location platform",
-    useCases: "Trailer visibility, field asset management, indoor/outdoor mixed environments"
+    useCases: "Trailer visibility, field asset management, indoor/outdoor mixed environments",
+    image: "https://storage.googleapis.com/geotab_mp_images/solution_logos/c231eaef-9530-4703-aacb-26955f43ca25.png"
   },
   {
     id: "supertag-rechargeable",
@@ -1384,7 +1466,8 @@ const products = [
     regions: "USA, Canada",
     certifications: "N/A",
     keyDifferentiator: "Only rechargeable SuperTag variant; designed for sustainability and dock-based operations where regular charging is feasible",
-    useCases: "Sustainability-focused operations, trailer visibility, dock-to-dock workflows"
+    useCases: "Sustainability-focused operations, trailer visibility, dock-to-dock workflows",
+    image: "https://storage.googleapis.com/geotab_mp_images/solution_logos/567edad4-a55a-4dd8-8f6e-54ef54b80a96.png"
   },
   {
     id: "e9-puck",
@@ -1416,7 +1499,8 @@ const products = [
     regions: "USA, Canada",
     certifications: "N/A",
     keyDifferentiator: "Ultra-low cost BLE puck for high-density asset tagging without per-tag cellular costs; works alongside SuperTag-equipped vehicles/gateways",
-    useCases: "Pallet tracking, cargo tagging, tool tracking alongside SuperTag gateways"
+    useCases: "Pallet tracking, cargo tagging, tool tracking alongside SuperTag gateways",
+    image: "https://storage.googleapis.com/geotab_mp_images/solution_logos/9f77c82f-e0e0-45b5-aeb4-312654cd6ac6.png"
   },
   {
     id: "e7-puck",
@@ -1448,7 +1532,8 @@ const products = [
     regions: "USA, Canada",
     certifications: "N/A",
     keyDifferentiator: "SymBLE firmware for versatile asset tracking; optional rubber overmold for added protection; general-purpose puck for assets of all sizes",
-    useCases: "Cargo tracking, general asset tracking (tools, equipment, containers)"
+    useCases: "Cargo tracking, general asset tracking (tools, equipment, containers)",
+    image: "https://storage.googleapis.com/geotab_mp_images/solution_logos/33a785e0-74ff-4977-865c-0f568d429982.png"
   },
   {
     id: "e8-puck",
@@ -1480,7 +1565,8 @@ const products = [
     regions: "USA, Canada",
     certifications: "N/A",
     keyDifferentiator: "Smallest form factor in Link Labs lineup; built-in accelerometer and motion detection for accurate tracking; up to 7-year battery in XLE mode",
-    useCases: "Tool tracking, small equipment, high-density asset environments"
+    useCases: "Tool tracking, small equipment, high-density asset environments",
+    image: "https://storage.googleapis.com/geotab_mp_images/solution_logos/78e075dd-092b-4dfd-b433-2318137238d5.png"
   },
   {
     id: "c10-badge",
@@ -1512,7 +1598,8 @@ const products = [
     regions: "USA, Canada",
     certifications: "N/A",
     keyDifferentiator: "Credit-card badge form factor for personnel tracking; built-in panic/SOS button for emergency alerting; optional RFID integration",
-    useCases: "Personnel management, workplace safety, hospital staff/patient tracking, indoor positioning"
+    useCases: "Personnel management, workplace safety, hospital staff/patient tracking, indoor positioning",
+    image: ""
   },
   {
     id: "s1-temp",
@@ -1544,7 +1631,8 @@ const products = [
     regions: "USA, Canada",
     certifications: "N/A",
     keyDifferentiator: "Real-time temperature and humidity monitoring with data logging (200 records); purpose-built for cold chain and environmental compliance",
-    useCases: "Cold chain monitoring, pharmaceutical/food transport, refrigerated trailer monitoring, cargo temperature tracking"
+    useCases: "Cold chain monitoring, pharmaceutical/food transport, refrigerated trailer monitoring, cargo temperature tracking",
+    image: "https://storage.googleapis.com/geotab_mp_images/solution_logos/e3701c46-5d1e-4e7a-92e4-c1a3fcc8be64.png"
   },
   {
     id: "open-close-sensor",
@@ -1576,7 +1664,8 @@ const products = [
     regions: "USA, Canada",
     certifications: "N/A",
     keyDifferentiator: "Purpose-built door/window open-close detection with magnetic Hall-effect sensor; tamper alerts; stores 2,048 local event records for offline logging",
-    useCases: "Trailer door monitoring, cargo container access, cold chain door events, security/access monitoring"
+    useCases: "Trailer door monitoring, cargo container access, cold chain door events, security/access monitoring",
+    image: "https://storage.googleapis.com/geotab_mp_images/solution_logos/a7047f51-4365-4d03-a6c0-57abbab15677.png"
   },
   {
     id: "iox-bt",
@@ -1608,7 +1697,8 @@ const products = [
     regions: "8 regions; 4 languages",
     certifications: "N/A",
     keyDifferentiator: "Transforms any GO-equipped vehicle into a BLE beacon scanner; compatible with any public-MAC BLE beacon (no vendor lock-in); reads up to 200 beacons simultaneously",
-    useCases: "Tool/equipment inventory tracking, in-cab sensor monitoring, last-known BLE asset location"
+    useCases: "Tool/equipment inventory tracking, in-cab sensor monitoring, last-known BLE asset location",
+    image: "https://storage.googleapis.com/geotab_mp_images/solution_logos/7131d1fe-c5f6-4600-a470-bcf42f4f87a8.png"
   }
 ];
 
@@ -1664,6 +1754,7 @@ function renderCards() {
     gridEl.innerHTML = filtered.map(p => `
       <div class="product-card ${selectedIds.includes(p.id) ? 'selected' : ''}" data-id="${p.id}" onclick="toggleSelect('${p.id}')">
         <div class="card-type-badge ${p.badgeClass}">${p.badge}</div>
+        ${p.image ? `<div class="card-image"><img src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.parentElement.style.display='none'"></div>` : ''}
         <div class="card-header">
           <div>
             <div class="brand">${p.brand}</div>
