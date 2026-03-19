@@ -745,6 +745,7 @@ const products = [
     name: "GO Anywhere Plus",
     brand: "Geotab",
     category: "gps",
+    categories: ["gps", "satellite"],
     tags: ["gps","satellite"],
     badge: "SATELLITE",
     badgeClass: "badge-satellite",
@@ -1741,7 +1742,10 @@ let compareSlots = [null, null, null]; // 3 slots minimum, up to 4
 // ── RENDER CARDS ──
 function renderCards() {
   const grids = { gps: [], solar: [], satellite: [], ble: [] };
-  products.forEach(p => { grids[p.category].push(p); });
+  products.forEach(p => {
+    const cats = p.categories || [p.category];
+    cats.forEach(cat => { if (grids[cat]) grids[cat].push(p); });
+  });
 
   Object.keys(grids).forEach(cat => {
     const gridEl = document.getElementById(cat === "satellite" ? "satGrid" : cat + "Grid");
