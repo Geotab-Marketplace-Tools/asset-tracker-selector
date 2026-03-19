@@ -914,18 +914,17 @@
   /* ── Print styles ── */
   @media print {
     @page { margin: 1.2cm; }
-    /* Hide everything except the comparison modal */
-    header, .controls, .compare-bar, #pill-tooltip,
-    .quiz-overlay, .seg-overlay, .contact-overlay,
-    .products-section, .info-banner { display: none !important; }
-    /* Show the modal cleanly */
-    body.printing-comparison .modal-overlay {
-      position: static !important;
+    /* Hide every top-level element */
+    body > * { display: none !important; }
+    /* Then show only the comparison modal */
+    body.printing-comparison #modalOverlay {
       display: block !important;
+      position: static !important;
       background: none !important;
       padding: 0 !important;
     }
-    body.printing-comparison .modal {
+    body.printing-comparison #modalOverlay .modal {
+      display: block !important;
       box-shadow: none !important;
       max-width: 100% !important;
       width: 100% !important;
@@ -934,13 +933,13 @@
       border-radius: 0 !important;
       animation: none !important;
     }
-    .modal-close, .export-pdf-btn, .modal-selectors, .modal-cta { display: none !important; }
-    .comparison-body { overflow: visible !important; }
+    .modal-header, .modal-selectors, .modal-cta { display: none !important; }
+    .comparison-body { display: block !important; overflow: visible !important; }
     .print-header { display: block !important; margin-bottom: 14px; padding: 0 4px; }
     .print-header-title { font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
     .print-header-sub { font-size: 10px; color: #64748b; margin-bottom: 8px; }
     .print-header-rule { border: none; border-top: 2px solid #0066CC; }
-    .comparison-table { width: 100% !important; border-collapse: collapse !important; }
+    .comparison-table { display: table !important; width: 100% !important; border-collapse: collapse !important; }
     .comparison-table th, .comparison-table td { font-size: 10.5px !important; padding: 5px 8px !important; }
     .comparison-table th img, .comparison-table td img { max-height: 70px !important; }
     .comparison-table .section-row td { font-size: 9px !important; }
