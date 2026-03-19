@@ -480,10 +480,48 @@
     background: var(--gray-100);
     color: var(--gray-600);
     white-space: nowrap;
+    position: relative;
   }
   .spec-pill.highlight { background: #DBEAFE; color: #1E40AF; }
   .spec-pill.green { background: #D1FAE5; color: #065F46; }
   .spec-pill.orange { background: #FEF3C7; color: #92400E; }
+  /* ── Spec-pill tooltips ── */
+  .spec-pill[data-tooltip] { cursor: help; }
+  .spec-pill[data-tooltip]::before,
+  .spec-pill[data-tooltip]::after {
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.18s;
+    position: absolute;
+    z-index: 9999;
+  }
+  .spec-pill[data-tooltip]::before {
+    content: attr(data-tooltip);
+    bottom: calc(100% + 7px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1e293b;
+    color: #f8fafc;
+    font-size: 11.5px;
+    font-weight: 400;
+    line-height: 1.45;
+    padding: 7px 10px;
+    border-radius: 7px;
+    width: 210px;
+    white-space: normal;
+    text-align: left;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+  }
+  .spec-pill[data-tooltip]::after {
+    content: '';
+    bottom: calc(100% + 2px);
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: #1e293b;
+  }
+  .spec-pill[data-tooltip]:hover::before,
+  .spec-pill[data-tooltip]:hover::after { opacity: 1; }
   .check-indicator {
     width: 22px;
     height: 22px;
@@ -2060,6 +2098,54 @@ function getRegionTag(regions) {
   return '';
 }
 
+// ── SPEC TOOLTIPS ──
+const SPEC_TOOLTIPS = {
+  // Connectivity
+  'LTE-M':            'Low-power LTE for IoT. Longer battery life than standard LTE, good indoor penetration, and wide carrier support.',
+  'LTE-M/NB-IoT':     'Dual-mode IoT cellular. LTE-M for higher speeds; NB-IoT for deeper wall penetration. Picks the best mode per carrier.',
+  'LTE Cat-M/NB-IoT': 'Dual-mode IoT cellular. LTE-M for higher speeds; NB-IoT for deeper wall penetration. Picks the best mode per carrier.',
+  'LTE CAT-1':        'Standard LTE for IoT — faster data than LTE-M, ideal for high-frequency real-time reporting.',
+  'LTE Cat 1':        'Standard LTE for IoT — faster data than LTE-M, ideal for high-frequency real-time reporting.',
+  '4G LTE':           'Full 4G cellular — highest bandwidth, ideal for real-time tracking and frequent position updates.',
+  '4G LTE Global':    '4G LTE with multi-band support for North America, Europe, and beyond — one SKU, multiple regions.',
+  'Cellular':         'Reports location via cellular network (no satellite required).',
+  'Cellular+LoRa+Sat':'Triple-mode connectivity: cellular, LoRa long-range radio, and satellite backup — minimizes dead zones.',
+  'OGx Satellite':    'Orbcomm OGx LEO satellite network — global two-way messaging in areas with zero cellular coverage.',
+  'Starlink D2C':     'SpaceX Starlink direct-to-cell satellite fallback — extends coverage deep into remote areas beyond any cell tower.',
+  // Location tech
+  '5-Constellation':  'Uses all 5 major satellite systems (GPS, GLONASS, BeiDou, Galileo, QZSS) for faster lock-on and higher accuracy.',
+  '5-Tech Location':  'Blends GPS, Wi-Fi, cellular, BLE, and indoor beacon positioning — accurately locates assets indoors and outdoors.',
+  'WiFi Indoor':      'Estimates indoor location using nearby Wi-Fi access point signals — works where GPS cannot reach.',
+  '-162 dBm GPS':     'Extremely sensitive GPS receiver — acquires a fix in dense urban canyons, under tree cover, or inside buildings.',
+  '6-Axis IMU':       'Six-axis inertial sensor: 3-axis accelerometer + 3-axis gyroscope. Detects motion, tilt, impact, and harsh events.',
+  // Bluetooth
+  'BLE 5.0':          'Bluetooth Low Energy 5.0 — wireless, power-efficient communication with range up to ~300 m in open air.',
+  'BLE 5.2 Gateway':  'Bluetooth 5.2 hub: reads signals from nearby BLE asset tags and relays their data to the cloud over cellular.',
+  'BLE Only':         'Bluetooth-only device — no built-in cellular. Needs a nearby Geotab GO device or BLE reader to transmit data.',
+  'BLE Reader':       'Receives BLE signals from tags placed on assets. The reader reports all tag locations — tags need no GPS.',
+  'Gateway-Dependent':'Requires a Geotab GO device or fixed BLE gateway within Bluetooth range to report location. No standalone cellular.',
+  'SymBLE Firmware':  'Geotab\'s SymBLE protocol — unlocks advanced BLE features and faster sync on compatible GO devices.',
+  'Any BLE Beacon':   'Works with any standard BLE beacon (Eddystone/iBeacon) — not locked to a proprietary tag format.',
+  'IOX Add-On':       'Plugs into a Geotab GO device via the IOX accessory port to add BLE reading capability to existing hardware.',
+  // IP & durability
+  'IP66':             'Dust-tight + protected against powerful water jets. Good for outdoor or wash-down environments.',
+  'IP67':             'Dust-tight + survives submersion in 1 m of water for 30 minutes.',
+  'IP67/IP69K':       'IP67 waterproof + IP69K steam/high-pressure wash resistant. Suits food, agriculture, or heavy wash-down use.',
+  'IP67/IPX9K':       'IP67 waterproof + IPX9K high-pressure hot-water jet resistance — handles steam cleaning.',
+  'IP68':             'Dust-tight + survives continuous submersion beyond 1 m depth. Higher protection than IP67.',
+  'IP68/IK07':        'IP68 waterproof + IK07 impact rating (withstands 2 J impact) — handles drops and rough handling.',
+  'IP68/IP69K':       'Maximum waterproof protection (IP68) + steam/pressure wash resistance (IP69K) — for the harshest conditions.',
+  'MIL-STD-810G':     'US military durability standard — tested against shock, vibration, extreme temperatures, humidity, and altitude.',
+  'HERO Mil-Grade':   'Hardened to military-grade standards for extreme temperature, impact, and demanding field conditions.',
+  'ATEX Zone 2':      'Certified safe for use in potentially explosive atmospheres. Zone 2 = area where flammable gas may occasionally be present. Required for oil & gas, mining, and some industrial sites.',
+  'Thatcham S7':      'UK insurance-approved GPS tracker certification. Required by some UK fleet insurance policies.',
+};
+
+function pillHtml(pill, cls) {
+  const tt = SPEC_TOOLTIPS[pill];
+  return `<span class="spec-pill ${cls}"${tt ? ` data-tooltip="${tt}"` : ''}>${pill}</span>`;
+}
+
 function renderCards() {
   const grids = { gps: [], solar: [], satellite: [], ble: [] };
   products.forEach(p => {
@@ -2087,7 +2173,7 @@ function renderCards() {
           <div class="check-indicator">${selectedIds.includes(p.id) ? '\u2713' : ''}</div>
         </div>
         <div class="quick-specs">
-          ${p.pills.map((pill, i) => `<span class="spec-pill ${p.pillClasses[i] || ''}">${pill}</span>`).join('')}
+          ${p.pills.map((pill, i) => pillHtml(pill, p.pillClasses[i] || '')).join('')}
         </div>
         ${getRegionTag(p.regions)}
         ${p.marketplaceUrl ? `<a class="mp-link" href="${p.marketplaceUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">
