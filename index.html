@@ -209,6 +209,259 @@
   }
   .mp-link:hover { color: var(--geotab-dark); }
   .mp-link svg { flex-shrink: 0; }
+
+  /* ── Help Me Choose Quiz ── */
+  .controls-divider { width: 1px; height: 24px; background: var(--gray-200); flex-shrink: 0; }
+  .quiz-trigger-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 18px;
+    background: linear-gradient(135deg, var(--geotab-dark), var(--geotab-accent));
+    color: #fff; border: none; border-radius: 20px;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    transition: opacity 0.15s; white-space: nowrap; font-family: inherit;
+  }
+  .quiz-trigger-btn:hover { opacity: 0.88; }
+
+  .quiz-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.6); z-index: 200;
+    align-items: center; justify-content: center; padding: 20px;
+  }
+  .quiz-overlay.open { display: flex; }
+  .quiz-modal {
+    background: #fff; border-radius: 16px; width: 100%; max-width: 620px;
+    max-height: 90vh; overflow-y: auto;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.35); position: relative;
+  }
+  .quiz-head {
+    padding: 24px 28px 0; display: flex;
+    align-items: center; justify-content: space-between;
+  }
+  .quiz-head-label {
+    font-size: 12px; font-weight: 700; color: var(--geotab-blue);
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+  .quiz-close-x {
+    background: none; border: none; font-size: 22px; line-height: 1;
+    cursor: pointer; color: var(--gray-400); padding: 0;
+  }
+  .quiz-close-x:hover { color: var(--gray-700); }
+  .quiz-prog-wrap { padding: 14px 28px 0; }
+  .quiz-prog-track {
+    height: 4px; background: var(--gray-100); border-radius: 2px; overflow: hidden;
+  }
+  .quiz-prog-bar {
+    height: 100%; background: linear-gradient(90deg, var(--geotab-blue), var(--geotab-accent));
+    border-radius: 2px; transition: width 0.35s ease;
+  }
+  .quiz-step-lbl { padding: 6px 28px 0; font-size: 12px; color: var(--gray-400); font-weight: 500; }
+  .quiz-body { padding: 18px 28px 28px; }
+  .quiz-q { font-size: 20px; font-weight: 700; color: var(--geotab-dark); margin-bottom: 18px; line-height: 1.3; }
+  .quiz-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .quiz-opt {
+    display: flex; align-items: center; gap: 10px; padding: 14px 16px;
+    border: 2px solid var(--gray-200); border-radius: 10px;
+    background: #fff; cursor: pointer; text-align: left;
+    transition: all 0.15s; font-family: inherit; width: 100%;
+  }
+  .quiz-opt:hover { border-color: var(--geotab-accent); background: var(--geotab-light); transform: translateY(-1px); }
+  .quiz-opt.chosen { border-color: var(--geotab-blue); background: var(--geotab-light); }
+  .quiz-opt-icon { font-size: 24px; flex-shrink: 0; line-height: 1; }
+  .quiz-opt-lbl { font-size: 13px; font-weight: 600; color: var(--gray-700); line-height: 1.3; }
+  .quiz-back { background: none; border: none; color: var(--gray-400); font-size: 13px; font-weight: 500; cursor: pointer; padding: 0; margin-top: 18px; font-family: inherit; }
+  .quiz-back:hover { color: var(--gray-700); }
+
+  /* Results */
+  .quiz-res-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+  .quiz-res-header h2 { font-size: 19px; font-weight: 700; color: var(--geotab-dark); margin-bottom: 2px; }
+  .quiz-res-header p { font-size: 13px; color: var(--gray-500); margin: 0; }
+  .quiz-res-card {
+    display: flex; gap: 14px; padding: 16px;
+    border: 2px solid var(--gray-200); border-radius: 12px; margin-bottom: 10px; position: relative;
+  }
+  .quiz-res-card.best { border-color: var(--geotab-blue); background: var(--geotab-light); }
+  .quiz-best-badge {
+    position: absolute; top: -1px; right: 14px;
+    background: var(--geotab-blue); color: #fff; font-size: 10px; font-weight: 700;
+    letter-spacing: 0.5px; padding: 2px 10px; border-radius: 0 0 6px 6px; text-transform: uppercase;
+  }
+  .quiz-res-img {
+    width: 80px; height: 80px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: #fff; border-radius: 8px; overflow: hidden; border: 1px solid var(--gray-100);
+  }
+  .quiz-res-img img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .quiz-res-info { flex: 1; min-width: 0; }
+  .quiz-res-brand { font-size: 11px; color: var(--gray-500); font-weight: 500; margin-bottom: 2px; }
+  .quiz-res-name { font-size: 16px; font-weight: 700; color: var(--geotab-dark); margin-bottom: 5px; }
+  .quiz-res-why { font-size: 12px; color: var(--gray-600); line-height: 1.5; margin-bottom: 10px; }
+  .quiz-res-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .quiz-mp-btn {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 6px 14px; background: var(--geotab-blue); color: #fff;
+    border-radius: 6px; font-size: 12px; font-weight: 600; text-decoration: none; transition: background 0.15s;
+  }
+  .quiz-mp-btn:hover { background: var(--geotab-dark); }
+  .quiz-select-btn {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 6px 14px; background: var(--gray-100); color: var(--gray-700);
+    border-radius: 6px; font-size: 12px; font-weight: 600; border: none;
+    cursor: pointer; font-family: inherit; transition: background 0.15s;
+  }
+  .quiz-select-btn:hover { background: var(--gray-200); }
+  .quiz-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--gray-100);
+  }
+  .quiz-restart { background: none; border: none; color: var(--gray-400); font-size: 13px; font-weight: 500; cursor: pointer; padding: 0; font-family: inherit; }
+  .quiz-restart:hover { color: var(--gray-700); }
+  .quiz-view-all {
+    padding: 8px 18px; background: var(--gray-100); border: none;
+    border-radius: 8px; font-size: 13px; font-weight: 600; color: var(--gray-700);
+    cursor: pointer; font-family: inherit; transition: background 0.15s;
+  }
+  .quiz-view-all:hover { background: var(--gray-200); }
+  .quiz-no-results { text-align: center; padding: 20px 0; color: var(--gray-500); }
+  @media (max-width: 520px) {
+    .quiz-opts { grid-template-columns: 1fr; }
+    .quiz-body { padding: 16px 20px 24px; }
+    .quiz-head, .quiz-prog-wrap, .quiz-step-lbl { padding-left: 20px; padding-right: 20px; }
+    .quiz-res-img { width: 60px; height: 60px; }
+  }
+
+  /* ── Find by Segment ── */
+  .seg-trigger-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 18px;
+    background: #fff; color: var(--geotab-dark);
+    border: 2px solid var(--geotab-dark); border-radius: 20px;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    transition: all 0.15s; white-space: nowrap; font-family: inherit;
+  }
+  .seg-trigger-btn:hover { background: var(--geotab-dark); color: #fff; }
+  .seg-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.55); z-index: 200;
+    align-items: center; justify-content: center; padding: 20px;
+  }
+  .seg-overlay.open { display: flex; }
+  .seg-modal {
+    background: #fff; border-radius: 16px; width: 100%; max-width: 780px;
+    max-height: 90vh; overflow-y: auto;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.3);
+    animation: quizFadeIn 0.2s ease;
+  }
+  .seg-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 24px;
+    background: linear-gradient(135deg, var(--geotab-dark), var(--geotab-accent));
+    border-radius: 16px 16px 0 0; color: #fff;
+  }
+  .seg-head-left { display: flex; flex-direction: column; gap: 2px; }
+  .seg-head-eyebrow { font-size: 11px; font-weight: 600; opacity: 0.75; text-transform: uppercase; letter-spacing: 1px; }
+  .seg-head-title { font-size: 18px; font-weight: 700; }
+  .seg-close-x {
+    background: rgba(255,255,255,0.15); border: none; color: #fff;
+    width: 30px; height: 30px; border-radius: 50%; font-size: 20px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s; flex-shrink: 0;
+  }
+  .seg-close-x:hover { background: rgba(255,255,255,0.3); }
+  .seg-prog-wrap { padding: 16px 24px 0; }
+  .seg-prog-track { height: 4px; background: var(--gray-100); border-radius: 4px; }
+  .seg-prog-bar { height: 4px; background: linear-gradient(90deg, var(--geotab-blue), var(--geotab-accent)); border-radius: 4px; transition: width 0.35s ease; }
+  .seg-step-lbl { padding: 6px 24px 0; font-size: 12px; color: var(--gray-400); font-weight: 500; }
+  .seg-body { padding: 20px 24px 24px; }
+  .seg-question { font-size: 20px; font-weight: 700; color: var(--geotab-dark); margin-bottom: 5px; }
+  .seg-sub { font-size: 13px; color: var(--gray-500); margin-bottom: 20px; }
+  .seg-cards {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px;
+  }
+  .seg-card {
+    border: 2px solid var(--gray-200); border-radius: 12px; padding: 18px 12px;
+    cursor: pointer; text-align: center; transition: all 0.18s; background: #fff;
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+  }
+  .seg-card:hover { border-color: var(--geotab-accent); background: var(--geotab-light); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .seg-card-icon { font-size: 30px; line-height: 1; }
+  .seg-card-label { font-size: 13px; font-weight: 700; color: var(--gray-700); line-height: 1.3; }
+  .seg-card-desc { font-size: 11px; color: var(--gray-400); line-height: 1.35; margin-top: -4px; }
+  .seg-priority-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .seg-priority-card {
+    border: 2px solid var(--gray-200); border-radius: 12px; padding: 18px 16px;
+    cursor: pointer; text-align: left; transition: all 0.18s; background: #fff;
+    display: flex; align-items: flex-start; gap: 14px;
+  }
+  .seg-priority-card:hover { border-color: var(--geotab-accent); background: var(--geotab-light); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .seg-priority-icon { font-size: 26px; flex-shrink: 0; margin-top: 2px; }
+  .seg-priority-label { font-size: 14px; font-weight: 700; color: var(--gray-700); margin-bottom: 3px; }
+  .seg-priority-desc { font-size: 12px; color: var(--gray-400); line-height: 1.4; }
+  .seg-results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 14px; }
+  .seg-res-card {
+    border: 2px solid var(--gray-200); border-radius: 12px; overflow: hidden;
+    background: #fff; transition: all 0.18s;
+  }
+  .seg-res-card.top-pick { border-color: var(--geotab-blue); }
+  .seg-res-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+  .seg-res-top { background: #f8f9fb; padding: 14px; display: flex; align-items: center; justify-content: center; height: 100px; position: relative; }
+  .seg-res-top img { max-height: 80px; max-width: 100%; object-fit: contain; }
+  .seg-best-badge {
+    position: absolute; top: 0; left: 0; right: 0;
+    background: var(--geotab-blue); color: #fff;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
+    padding: 3px 8px; text-align: center; text-transform: uppercase;
+  }
+  .seg-res-body { padding: 12px; }
+  .seg-res-brand { font-size: 11px; color: var(--gray-400); margin-bottom: 2px; }
+  .seg-res-name { font-size: 14px; font-weight: 700; color: var(--geotab-dark); margin-bottom: 6px; line-height: 1.3; }
+  .seg-res-why { font-size: 12px; color: var(--gray-500); line-height: 1.45; margin-bottom: 10px; }
+  .seg-res-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .seg-mp-btn {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 5px 11px; background: var(--geotab-blue); color: #fff;
+    border-radius: 6px; font-size: 11px; font-weight: 600; text-decoration: none;
+    transition: background 0.15s;
+  }
+  .seg-mp-btn:hover { background: var(--geotab-dark); }
+  .seg-select-btn {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 5px 11px; background: var(--gray-100); color: var(--gray-700);
+    border-radius: 6px; font-size: 11px; font-weight: 600; border: none;
+    cursor: pointer; font-family: inherit; transition: background 0.15s;
+  }
+  .seg-select-btn:hover { background: var(--gray-200); }
+  .seg-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 24px; border-top: 1px solid var(--gray-100);
+  }
+  .seg-back-btn {
+    background: none; border: none; color: var(--gray-400);
+    font-size: 13px; cursor: pointer; font-family: inherit;
+    display: flex; align-items: center; gap: 4px; padding: 0; transition: color 0.15s;
+  }
+  .seg-back-btn:hover { color: var(--gray-700); }
+  .seg-footer-right { display: flex; gap: 10px; align-items: center; }
+  .seg-restart-btn {
+    background: none; border: none; color: var(--gray-400);
+    font-size: 12px; cursor: pointer; font-family: inherit; transition: color 0.15s;
+  }
+  .seg-restart-btn:hover { color: var(--gray-700); }
+  .seg-view-all-btn {
+    background: none; border: 1.5px solid var(--gray-200);
+    color: var(--gray-700); border-radius: 20px;
+    padding: 6px 16px; font-size: 12px; font-weight: 600;
+    cursor: pointer; font-family: inherit; transition: all 0.15s;
+  }
+  .seg-view-all-btn:hover { border-color: var(--geotab-accent); color: var(--geotab-accent); }
+  @media (max-width: 560px) {
+    .seg-cards { grid-template-columns: repeat(2, 1fr); }
+    .seg-priority-cards { grid-template-columns: 1fr; }
+    .seg-results-grid { grid-template-columns: 1fr 1fr; }
+    .seg-body { padding: 16px 16px 20px; }
+    .seg-prog-wrap, .seg-step-lbl { padding-left: 16px; padding-right: 16px; }
+    .seg-footer { padding: 12px 16px; }
+  }
+
   .spec-pill {
     font-size: 11px;
     padding: 2px 8px;
@@ -668,6 +921,16 @@
     <button class="filter-btn" data-filter="compact">Compact</button>
     <button class="filter-btn" data-filter="indoor">Indoor/Outdoor</button>
   </div>
+  <div class="controls-divider"></div>
+  <button class="quiz-trigger-btn" onclick="openQuiz()">
+    <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3" stroke-linecap="round"/><circle cx="12" cy="17" r=".5" fill="currentColor"/></svg>
+    Help me choose
+  </button>
+  <div class="controls-divider"></div>
+  <button class="seg-trigger-btn" onclick="openSegFinder()">
+    <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18" stroke-linecap="round"/><rect x="3" y="4" width="4" height="4" rx="1" fill="currentColor" stroke="none"/><rect x="3" y="10" width="4" height="4" rx="1" fill="currentColor" stroke="none"/><rect x="3" y="16" width="4" height="4" rx="1" fill="currentColor" stroke="none"/></svg>
+    Find by segment
+  </button>
 </div>
 
 <div class="main-container">
@@ -2022,13 +2285,441 @@ function submitContactForm(e) {
   });
 }
 
-document.getElementById('contactOverlay').addEventListener('click', function(e) {
-  if (e.target === this) closeContactForm();
-});
+// Backdrop-click handlers are on the overlay divs via onclick attribute
+
+// ── HELP ME CHOOSE QUIZ ──
+const quizQuestions = [
+  {
+    question: 'What type of asset are you tracking?',
+    options: [
+      { label: 'Trailers, containers & chassis', icon: '🚛',
+        matches: ['go-anywhere','oyster3','remora3','solarnet','stealthnet','ct-1000','gt-1220','gt-1230','tt600','tt603','sc-1000','go-anywhere-plus','supertag-pro','supertag-plus','supertag-rechargeable','open-close-sensor'] },
+      { label: 'Construction & heavy equipment', icon: '🏗️',
+        matches: ['go-anywhere','magtrack-pro','oyster3','remora3','solarnet','ct-1000','gt-1220','tt600','sc-1000','go-anywhere-plus','g70','barra-edge'] },
+      { label: 'Tools, pallets & small cargo', icon: '🔧',
+        matches: ['yabby3','yabby-edge','barra-edge','bemini','tag-iq-card','e9-puck','e7-puck','e8-puck','supertag-pro','supertag-plus','iox-bt'] },
+      { label: 'Personnel & people tracking', icon: '👷',
+        matches: ['c10-badge','supertag-pro','supertag-plus','supertag-rechargeable'] },
+      { label: 'Powered vehicles & machinery', icon: '🚗',
+        matches: ['g70','go-anywhere-plus','iox-bt'] },
+    ]
+  },
+  {
+    question: 'Where does the asset primarily operate?',
+    options: [
+      { label: 'Outdoors (roads, yards, fields)', icon: '🌤️',
+        matches: ['go-anywhere','go-anywhere-plus','oyster3','remora3','yabby3','magtrack-pro','solarnet','stealthnet','ct-1000','gt-1220','gt-1230','tt600','tt603','sc-1000','g70','bemini','tag-iq-card','barra-edge'] },
+      { label: 'Indoor & outdoor mixed', icon: '🏭',
+        matches: ['oyster-edge','yabby-edge','barra-edge','supertag-pro','supertag-plus','supertag-rechargeable','bemini','c10-badge','e9-puck','e7-puck','e8-puck','iox-bt','s1-temp','open-close-sensor'] },
+      { label: 'Remote / limited cell signal', icon: '🛰️',
+        matches: ['sc-1000','go-anywhere-plus','magtrack-pro'] },
+    ]
+  },
+  {
+    question: 'What is the power situation for the asset?',
+    options: [
+      { label: 'No power — battery only', icon: '🔋',
+        matches: ['go-anywhere','oyster3','remora3','yabby3','oyster-edge','yabby-edge','barra-edge','stealthnet','bemini','tag-iq-card','supertag-pro','supertag-plus','supertag-rechargeable','e9-puck','e7-puck','e8-puck','c10-badge','magtrack-pro','s1-temp','open-close-sensor'] },
+      { label: 'Solar power preferred', icon: '☀️',
+        matches: ['solarnet','ct-1000','gt-1220','gt-1230','tt600','tt603','sc-1000'] },
+      { label: 'Wired power available', icon: '⚡',
+        matches: ['g70','go-anywhere-plus','iox-bt'] },
+    ]
+  },
+  {
+    question: 'Any specific requirements? (optional)',
+    options: [
+      { label: 'Satellite / global coverage', icon: '📡',
+        matches: ['sc-1000','go-anywhere-plus','magtrack-pro'] },
+      { label: 'Temperature monitoring', icon: '🌡️',
+        matches: ['s1-temp','tt603','bemini','gt-1220'] },
+      { label: 'Track many items with BLE tags', icon: '🏷️',
+        matches: ['iox-bt','oyster-edge','e9-puck','e7-puck','e8-puck','supertag-pro'] },
+      { label: 'Compact & discreet form factor', icon: '📐',
+        matches: ['yabby3','bemini','tag-iq-card','barra-edge','e8-puck','yabby-edge'] },
+      { label: 'Maximum battery life', icon: '⏱️',
+        matches: ['remora3','solarnet','tt600','sc-1000'] },
+      { label: 'No specific requirement', icon: '✓', matches: null },
+    ]
+  }
+];
+
+let quizAnswers = [];
+let quizStep = 0;
+
+function openQuiz() {
+  quizAnswers = [];
+  quizStep = 0;
+  document.getElementById('quizOverlay').classList.add('open');
+  renderQuizStep();
+}
+
+function closeQuiz() {
+  document.getElementById('quizOverlay').classList.remove('open');
+}
+
+function updateQuizProgress() {
+  const pct = Math.round((quizStep / quizQuestions.length) * 100);
+  document.getElementById('quizProgBar').style.width = pct + '%';
+  document.getElementById('quizStepLbl').textContent =
+    quizStep < quizQuestions.length
+      ? `Step ${quizStep + 1} of ${quizQuestions.length}`
+      : 'Your results';
+}
+
+function renderQuizStep() {
+  updateQuizProgress();
+  const q = quizQuestions[quizStep];
+  document.getElementById('quizBody').innerHTML = `
+    <h2 class="quiz-q">${q.question}</h2>
+    <div class="quiz-opts">
+      ${q.options.map((opt, i) => `
+        <button class="quiz-opt" onclick="selectOption(${i})">
+          <span class="quiz-opt-icon">${opt.icon}</span>
+          <span class="quiz-opt-lbl">${opt.label}</span>
+        </button>`).join('')}
+    </div>
+    ${quizStep > 0 ? `<button class="quiz-back" onclick="quizGoBack()">← Back</button>` : ''}
+  `;
+}
+
+function selectOption(i) {
+  // Brief visual highlight
+  const btns = document.querySelectorAll('.quiz-opt');
+  if (btns[i]) btns[i].classList.add('chosen');
+
+  const option = quizQuestions[quizStep].options[i];
+  quizAnswers.push(option.matches);
+
+  setTimeout(() => {
+    if (quizStep < quizQuestions.length - 1) {
+      quizStep++;
+      renderQuizStep();
+    } else {
+      renderQuizResults();
+    }
+  }, 220);
+}
+
+function quizGoBack() {
+  quizAnswers.pop();
+  quizStep--;
+  renderQuizStep();
+}
+
+function calcQuizResults() {
+  const scores = {};
+  products.forEach(p => { scores[p.id] = 0; });
+
+  quizAnswers.forEach(matches => {
+    if (!matches) return; // "No specific requirement"
+    matches.forEach(id => { if (scores[id] !== undefined) scores[id]++; });
+  });
+
+  return products
+    .map(p => ({ ...p, score: scores[p.id] }))
+    .filter(p => p.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3);
+}
+
+function renderQuizResults() {
+  updateQuizProgress();
+  const results = calcQuizResults();
+
+  const cardsHtml = results.length ? results.map((p, i) => `
+    <div class="quiz-res-card ${i === 0 ? 'best' : ''}">
+      ${i === 0 ? '<div class="quiz-best-badge">Best Match</div>' : ''}
+      ${p.image ? `<div class="quiz-res-img"><img src="${p.image}" alt="${p.name}" onerror="this.parentElement.style.display='none'"></div>` : ''}
+      <div class="quiz-res-info">
+        <div class="quiz-res-brand">${p.brand}</div>
+        <div class="quiz-res-name">${p.name}</div>
+        <div class="quiz-res-why">${p.keyDifferentiator.split(';')[0]}</div>
+        <div class="quiz-res-actions">
+          ${p.marketplaceUrl ? `<a class="quiz-mp-btn" href="${p.marketplaceUrl}" target="_blank" rel="noopener">View on Marketplace ↗</a>` : ''}
+          <button class="quiz-select-btn" onclick="quizSelectProduct('${p.id}')">+ Add to Compare</button>
+        </div>
+      </div>
+    </div>`).join('')
+  : '<p class="quiz-no-results">No exact matches found — try adjusting your answers.</p>';
+
+  document.getElementById('quizStepLbl').textContent = 'Your results';
+  document.getElementById('quizBody').innerHTML = `
+    <div class="quiz-res-header">
+      <svg width="28" height="28" fill="none" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="#2E8B57" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div><h2>Your top matches</h2><p>Based on your answers — ${results.length} product${results.length !== 1 ? 's' : ''} recommended</p></div>
+    </div>
+    ${cardsHtml}
+    <div class="quiz-footer">
+      <button class="quiz-restart" onclick="openQuiz()">← Start over</button>
+      <button class="quiz-view-all" onclick="closeQuiz()">View all products</button>
+    </div>
+  `;
+}
+
+function quizSelectProduct(id) {
+  closeQuiz();
+  if (!selectedIds.includes(id)) {
+    if (selectedIds.length >= 4) selectedIds.shift();
+    selectedIds.push(id);
+    renderCards();
+    updateCompareBar();
+  }
+  // Scroll to the card
+  setTimeout(() => {
+    const card = document.querySelector(`[data-id="${id}"]`);
+    if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 300);
+}
+
+// ── Find by Segment ──────────────────────────────────────────────────────────
+let segStep = 0;
+let segSegment = null;
+let segPriority = null;
+
+// Each segment has its own plain-language pain-point question and four options.
+// Options are written from the customer's perspective — no technical jargon.
+const segSegments = [
+  {
+    id: 'transportation', label: 'Transportation & Logistics', desc: 'Trucking, freight & trailers', icon: '🚛',
+    question: 'Which of these sounds most like your situation?',
+    priorities: [
+      { id: 'location', icon: '🔍', label: 'I can\'t find my trailers and assets',            desc: 'Assets disappear between drops — I don\'t know where they are across depots and lanes' },
+      { id: 'theft',    icon: '🚨', label: 'Equipment moves or goes missing without warning',  desc: 'Assets are borrowed, stolen, or relocated without my knowledge or approval' },
+      { id: 'remote',   icon: '📡', label: 'My routes go through cellular dead zones',         desc: 'I lose visibility on assets when they travel through remote or rural areas' },
+      { id: 'indoor',   icon: '🏭', label: 'I need visibility inside yards and facilities',    desc: 'GPS stops working in distribution centers, rail yards, and covered docks' },
+    ],
+  },
+  {
+    id: 'field-services', label: 'Field Services', desc: 'Technicians & mobile workers', icon: '🔧',
+    question: 'Which of these sounds most like your situation?',
+    priorities: [
+      { id: 'tools',    icon: '🔧', label: 'Tools and small equipment keep going missing',     desc: 'Drills, meters, and gear walk off job sites and I can\'t account for them' },
+      { id: 'proof',    icon: '📋', label: 'I can\'t prove where my assets were for billing',  desc: 'Clients dispute hours or service calls and I have no automated record to back me up' },
+      { id: 'location', icon: '📍', label: 'Assets are scattered and I can\'t locate them',    desc: 'Equipment is spread across dozens of sites and finding it is a daily headache' },
+      { id: 'remote',   icon: '🌲', label: 'Service areas have poor or no cellular signal',    desc: 'Technicians and assets go off-grid in rural or remote service territories' },
+    ],
+  },
+  {
+    id: 'vocational', label: 'Vocational', desc: 'Construction, utilities & heavy industry', icon: '🏗️',
+    question: 'Which of these sounds most like your situation?',
+    priorities: [
+      { id: 'hoarding',  icon: '🔍', label: 'Equipment gets hoarded — I can\'t share assets across sites', desc: 'Superintendents hold onto machinery "just in case," while other sites rent equipment sitting nearby' },
+      { id: 'theft',     icon: '🚨', label: 'Equipment moves after-hours or leaves the site without approval', desc: 'Unauthorized use overnight or on weekends — sometimes I discover assets have been stolen' },
+      { id: 'unpowered', icon: '🔌', label: 'Non-powered assets go missing — trailers, generators, light towers', desc: 'The Friday afternoon hunt for equipment left behind at a finished job site' },
+      { id: 'remote',    icon: '📡', label: 'Job sites are in remote areas with no cellular signal',          desc: 'I go blind on assets the moment they move beyond cellular infrastructure' },
+    ],
+  },
+  {
+    id: 'people-transport', label: 'People Transportation', desc: 'Transit, shuttles & motorcoach', icon: '🚌',
+    question: 'Which of these sounds most like your situation?',
+    priorities: [
+      { id: 'realtime',  icon: '🗓️', label: 'I need real-time vehicle locations for dispatch',       desc: 'Scheduling and passenger communication depend on knowing where vehicles are right now' },
+      { id: 'indoor',    icon: '🏢', label: 'I need visibility inside terminals and depots',          desc: 'GPS loses accuracy inside covered facilities, stations, and layover yards' },
+      { id: 'remote',    icon: '🌄', label: 'Routes pass through rural areas with poor coverage',     desc: 'Vehicles or support equipment disappear from tracking on certain corridors' },
+      { id: 'unpowered', icon: '🚌', label: 'Non-powered equipment or towed assets go missing',       desc: 'Support trailers, luggage carts, and equipment left at stops are hard to locate' },
+    ],
+  },
+  {
+    id: 'public-safety', label: 'Public Safety', desc: 'Police, fire, EMS & corrections', icon: '🛡️',
+    question: 'Which of these sounds most like your situation?',
+    priorities: [
+      { id: 'location', icon: '🎯', label: 'Critical equipment is hard to locate when it\'s needed', desc: 'Response time suffers because no one knows where specific gear or vehicles are stationed' },
+      { id: 'theft',    icon: '🔒', label: 'Assets disappear between shifts or are used without authorization', desc: 'Equipment goes missing from stations, vehicles, or storage without any record of who moved it' },
+      { id: 'remote',   icon: '📡', label: 'Operations take place in areas with no cellular signal',  desc: 'Incidents occur in tunnels, rural areas, or infrastructure where coverage doesn\'t exist' },
+      { id: 'indoor',   icon: '🏢', label: 'I need to track equipment inside facilities and buildings', desc: 'Evidence rooms, storage facilities, and large stations make indoor visibility a challenge' },
+    ],
+  },
+  {
+    id: 'public-works', label: 'Public Works', desc: 'Municipal equipment & infrastructure', icon: '🏛️',
+    question: 'Which of these sounds most like your situation?',
+    priorities: [
+      { id: 'location', icon: '🗺️', label: 'I can\'t account for equipment across depots and sites', desc: 'Assets move between locations, get borrowed by other departments, and become hard to track' },
+      { id: 'seasonal', icon: '🌿', label: 'Seasonal or non-powered equipment sits idle and disappears', desc: 'Snowplows, sweepers, and generators go into storage and no one knows exactly where they end up' },
+      { id: 'indoor',   icon: '🏭', label: 'I need visibility inside maintenance yards and facilities', desc: 'Equipment stored under cover or inside buildings doesn\'t show up reliably on GPS' },
+      { id: 'remote',   icon: '📡', label: 'Work takes place in areas with limited connectivity',      desc: 'Crews and equipment go off-grid at rural infrastructure or forestry work sites' },
+    ],
+  },
+  {
+    id: 'rental', label: 'Rental & Leasing', desc: 'Equipment & vehicle rental', icon: '🔑',
+    question: 'Which of these sounds most like your situation?',
+    priorities: [
+      { id: 'theft',       icon: '🚨', label: 'Equipment goes missing or customers don\'t return it',  desc: 'Theft, unauthorized re-rental, and overdue returns cost the business significantly' },
+      { id: 'battery',     icon: '⚡', label: 'Rental assets have no power source for a hardwired tracker', desc: 'Equipment sitting at customer sites has no vehicle power — I need years of battery life' },
+      { id: 'utilization', icon: '📊', label: 'I can\'t see how or when customers use the equipment',  desc: 'Utilization is a black box — I\'m billing flat rates without knowing actual engine-on hours' },
+      { id: 'location',    icon: '📍', label: 'Finding specific assets across customer sites takes too long', desc: 'Locating one piece of equipment from a fleet of hundreds at scattered sites wastes hours' },
+    ],
+  },
+];
+
+// Recommendations keyed by segment → pain-point id → { products, why }
+const segRecommendations = {
+  'transportation': {
+    'location': { products: ['go-anywhere','remora3','oyster3','tt600'],          why: { 'go-anywhere':'Battery-powered with 3-5 year life — easily hidden on trailers with no wiring needed','remora3':'Rugged magnetic mount that clings to trailers and reports real-time location','oyster3':'Industry-leading battery tracker with precise GPS for unmanned asset tracking','tt600':'Purpose-built solar trailer tracker with automatic arrival and departure alerts' } },
+    'theft':    { products: ['stealthnet','magtrack-pro','go-anywhere','remora3'], why: { 'stealthnet':'Covert hardwired GPS designed to survive discovery attempts — the industry standard for theft deterrence','magtrack-pro':'Heavy-duty magnetic mount tracker extremely difficult to remove without tools','go-anywhere':'Battery-powered and easily concealed — no wiring for a thief to trace','remora3':'Strong magnetic attachment with tamper-alert capability on any unauthorized movement' } },
+    'remote':   { products: ['go-anywhere-plus','sc-1000','oyster3'],              why: { 'go-anywhere-plus':'Auto-switches between cellular and satellite — no dead zones on cross-country or cross-border routes','sc-1000':'Pure satellite tracker — works anywhere in North America regardless of cellular coverage','oyster3':'Best-in-class cellular GPS for assets on well-covered routes' } },
+    'indoor':   { products: ['supertag-pro','remora3','oyster-edge','supertag-plus'], why: { 'supertag-pro':'BLE tag that pinpoints asset location inside docks, warehouses, and rail yards','remora3':'GPS + BLE combo — tracks outdoors and hands off to BLE gateways inside the facility','oyster-edge':'Hybrid indoor/outdoor tracker that switches seamlessly at facility boundaries','supertag-plus':'Compact BLE tag for cargo, pallets, and equipment inside distribution centers' } },
+  },
+  'field-services': {
+    'tools':    { products: ['supertag-pro','e9-puck','supertag-plus','e7-puck'],  why: { 'supertag-pro':'Long-range BLE tag — scan for missing tools from a truck parked in the driveway','e9-puck':'Rugged waterproof BLE puck built for tools that get dropped, rained on, and lost','supertag-plus':'Compact BLE tag small enough for drills, meters, and smaller hand tools','e7-puck':'Ultra-compact BLE tag for small items — fits inside tool pouches or equipment cases' } },
+    'proof':    { products: ['go-anywhere','yabby3','oyster3','g70'],              why: { 'go-anywhere':'Creates an automated, time-stamped record of every arrival and departure at client sites','yabby3':'Compact GPS that logs precise time-on-site — unalterable records for any billing dispute','oyster3':'Reliable cellular tracker with geofence logs exportable for any invoice or audit','g70':'Enterprise GPS with detailed reports on exactly where assets were and for how long' } },
+    'location': { products: ['go-anywhere','oyster3','remora3','yabby3'],          why: { 'go-anywhere':'Battery-powered GPS with 3-5 year life — track any asset without wiring','oyster3':'Real-time asset location across dozens of job sites from one dashboard','remora3':'Magnetic mount for quick deployment on vehicles and equipment at any site','yabby3':'Compact tracker with long battery that survives the back of a service van' } },
+    'remote':   { products: ['go-anywhere-plus','sc-1000','go-anywhere'],          why: { 'go-anywhere-plus':'GPS + satellite coverage for technicians working in rural or off-grid territories','sc-1000':'Pure satellite tracking for service areas with zero cellular coverage','go-anywhere':'Best cellular coverage option for most field service territories' } },
+  },
+  'vocational': {
+    'hoarding':  { products: ['go-anywhere','oyster3','remora3','g70'],            why: { 'go-anywhere':'Know exactly which site every asset is at — pull underutilized equipment before renting more','oyster3':'Live asset location so yard managers can see all iron across every job site in one view','remora3':'Quick magnetic deployment — a tracked asset is harder to hide from the yard manager','g70':'Enterprise GPS with utilization dashboards to spot equipment that hasn\'t moved in days' } },
+    'theft':     { products: ['stealthnet','magtrack-pro','go-anywhere','remora3'], why: { 'stealthnet':'Covert GPS — after-hours geofence alerts the moment unauthorized movement begins on site','magtrack-pro':'Heavy-duty magnetic tracker that\'s hard to remove and transmits location in real time','go-anywhere':'Easily concealed on any asset — instant alert fires when equipment moves after hours','remora3':'Strong magnetic mount with after-hours movement alerts for any theft scenario' } },
+    'unpowered': { products: ['go-anywhere','oyster3','solarnet','ct-1000'],       why: { 'go-anywhere':'No wiring needed — 3-5 year battery tracks trailers, light towers, and generators independently','oyster3':'Industry-leading battery life for non-powered assets left on site for months at a time','solarnet':'Solar-powered — never needs a battery swap, ideal for equipment parked outdoors year-round','ct-1000':'Heavy-duty solar GPS built for large non-powered assets in open construction environments' } },
+    'remote':    { products: ['go-anywhere-plus','sc-1000','go-anywhere'],         why: { 'go-anywhere-plus':'Auto-switches between cellular and satellite — full visibility even at remote mine or mountain sites','sc-1000':'Pure satellite tracker — works in any dead zone, no cellular infrastructure required','go-anywhere':'Strongest cellular GPS option for sites with partial coverage' } },
+  },
+  'people-transport': {
+    'realtime':  { products: ['go-anywhere','g70','yabby3','oyster3'],             why: { 'go-anywhere':'Live GPS with real-time alerts — know where every vehicle and asset is right now','g70':'Full-featured GPS built for transit fleets with dispatch integration and detailed reporting','yabby3':'Compact real-time tracker for smaller shuttle vehicles and support equipment','oyster3':'Reliable cellular GPS for assets that require constant, uninterrupted visibility' } },
+    'indoor':    { products: ['c10-badge','supertag-rechargeable','iox-bt','supertag-pro'], why: { 'c10-badge':'Wearable BLE badge for tracking passengers, staff, or assets inside terminals and stations','supertag-rechargeable':'Rechargeable BLE tag for depot equipment checked in and out on a daily cycle','iox-bt':'Adds BLE scanning capability to any existing Geotab-equipped vehicle','supertag-pro':'Long-range BLE tag for tracking assets inside large bus depots or transit facilities' } },
+    'remote':    { products: ['go-anywhere-plus','sc-1000','go-anywhere'],         why: { 'go-anywhere-plus':'Seamless GPS-to-satellite handoff for routes passing through cellular dead zones','sc-1000':'Satellite-only tracker for vehicles on routes with no cellular infrastructure','go-anywhere':'Best cellular coverage option for routes along major corridors' } },
+    'unpowered': { products: ['go-anywhere','oyster3','tt600','solarnet'],         why: { 'go-anywhere':'Battery-powered GPS tracks support trailers and equipment without any vehicle wiring','oyster3':'Long battery life for support assets not permanently attached to a vehicle','tt600':'Solar trailer tracker for towed support equipment left at stops or depots','solarnet':'Solar-powered tracker for outdoor equipment with no access to vehicle power' } },
+  },
+  'public-safety': {
+    'location': { products: ['go-anywhere','oyster3','magtrack-pro','g70'],        why: { 'go-anywhere':'Know where every piece of critical equipment is — even if it hasn\'t moved in weeks','oyster3':'Real-time location for response equipment deployed across multiple stations or staging areas','magtrack-pro':'Heavy-duty magnetic mount for rapid deployment on tactical and response vehicles','g70':'Enterprise GPS for complete situational awareness across the entire fleet' } },
+    'theft':    { products: ['stealthnet','magtrack-pro','go-anywhere','oyster3'], why: { 'stealthnet':'Covert GPS with tamper alerts — unauthorized removal triggers an immediate notification','magtrack-pro':'Robust magnetic tracker that is extremely difficult to remove from equipment','go-anywhere':'Easily concealed on any asset with instant alerts for any after-hours movement','oyster3':'GPS with geofence alerts for equipment leaving authorized areas or facilities' } },
+    'remote':   { products: ['go-anywhere-plus','sc-1000','go-anywhere'],          why: { 'go-anywhere-plus':'GPS + satellite for operations in remote wilderness, tunnels, or infrastructure dead zones','sc-1000':'Pure satellite tracker — maintains contact regardless of cellular infrastructure','go-anywhere':'Strong cellular GPS for most urban and suburban response areas' } },
+    'indoor':   { products: ['supertag-pro','e9-puck','iox-bt','oyster-edge'],     why: { 'supertag-pro':'BLE tag for tracking equipment inside stations, evidence rooms, and large facilities','e9-puck':'Rugged BLE puck for tracking tactical equipment in large buildings or compounds','iox-bt':'BLE scanning hub — adds indoor tracking to any Geotab-equipped response vehicle','oyster-edge':'Hybrid outdoor/indoor tracker for equipment that moves between field and facility' } },
+  },
+  'public-works': {
+    'location': { products: ['go-anywhere','oyster3','g70','remora3'],             why: { 'go-anywhere':'Battery GPS tracks every piece of equipment across all depots and work sites in real time','oyster3':'Live location with utilization data — spot what\'s been sitting idle across your operation','g70':'Enterprise GPS dashboard with full fleet visibility across all municipal facilities','remora3':'Quick-deploy magnetic mount for utility trailers and equipment spread across the city' } },
+    'seasonal': { products: ['go-anywhere','solarnet','gt-1220','ct-1000'],        why: { 'go-anywhere':'3-5 year battery — attach once at the start of the season, still tracking when the asset returns','solarnet':'Solar-powered — no battery swaps for equipment parked outdoors all season long','gt-1220':'Solar trailer tracker for seasonal road maintenance and infrastructure equipment','ct-1000':'Heavy-duty solar GPS for large seasonal assets in off-season outdoor storage' } },
+    'indoor':   { products: ['supertag-pro','supertag-plus','iox-bt','e9-puck'],   why: { 'supertag-pro':'BLE tags for checking equipment in and out of maintenance yards automatically','supertag-plus':'Compact BLE tag for tools and small equipment in covered public works depots','iox-bt':'BLE scanning hub via existing Geotab vehicles to detect tagged equipment in yards','e9-puck':'Rugged waterproof BLE puck for tools and equipment in harsh municipal environments' } },
+    'remote':   { products: ['go-anywhere-plus','sc-1000','go-anywhere'],          why: { 'go-anywhere-plus':'GPS + satellite for crews working in remote rural areas, forests, or infrastructure dead zones','sc-1000':'Pure satellite — never loses contact in the most remote public works locations','go-anywhere':'Reliable cellular coverage for most municipal and suburban work zones' } },
+  },
+  'rental': {
+    'theft':       { products: ['stealthnet','magtrack-pro','go-anywhere','oyster3'], why: { 'stealthnet':'Covert GPS — impossible for customers to find or disable; immediate alert on any unauthorized movement','magtrack-pro':'Heavy-duty magnetic tracker that is extremely difficult for customers to remove','go-anywhere':'Battery-powered and easily hidden on any rental asset — no visible installation','oyster3':'Real-time GPS with geofence alerts the moment a rental asset leaves an authorized zone' } },
+    'battery':     { products: ['go-anywhere','oyster3','solarnet','tt600'],          why: { 'go-anywhere':'3-5 year battery — deploy once at the rental yard, track for years at customer sites with zero maintenance','oyster3':'Industry-leading battery life for rental assets with no access to vehicle or mains power','solarnet':'Solar-powered — permanently self-charging at any outdoor customer site, no battery swaps ever','tt600':'Solar trailer tracker ideal for rental fleets of trailers, scaffolding, and heavy equipment' } },
+    'utilization': { products: ['go-anywhere','oyster3','g70','yabby3'],              why: { 'go-anywhere':'See exactly when and how long the customer has the equipment running versus it sitting idle','oyster3':'Utilization reports show engine-on versus dormant time across the entire rental portfolio','g70':'Enterprise GPS with detailed utilization dashboards for accurate billing and capacity planning','yabby3':'Compact tracker that logs exact active-use periods for powered equipment at customer sites' } },
+    'location':    { products: ['go-anywhere','oyster3','remora3','magtrack-pro'],    why: { 'go-anywhere':'Know exactly where every rental asset is — any customer site, any time, in real time','oyster3':'Live GPS location — find any asset across the entire portfolio in seconds from one map','remora3':'Strong magnetic mount for quick deployment on any rental item — find it anywhere on the map','magtrack-pro':'Heavy-duty magnetic GPS for large rental equipment moved between customer job sites' } },
+  },
+};
+
+function openSegFinder() {
+  segStep = 0; segSegment = null; segPriority = null;
+  document.getElementById('segOverlay').classList.add('open');
+  renderSegStep();
+}
+
+function closeSegFinder() {
+  document.getElementById('segOverlay').classList.remove('open');
+}
+
+function renderSegStep() {
+  const progBar = document.getElementById('segProgBar');
+  const stepLbl = document.getElementById('segStepLbl');
+  const body    = document.getElementById('segBody');
+  const footer  = document.getElementById('segFooter');
+
+  if (segStep === 0) {
+    progBar.style.width = '0%';
+    stepLbl.textContent = 'Step 1 of 2 — Fleet segment';
+    body.innerHTML = `
+      <div class="seg-question">What type of fleet do you operate?</div>
+      <div class="seg-sub">Select the segment that best describes your operation.</div>
+      <div class="seg-cards">
+        ${segSegments.map(s => `
+          <div class="seg-card" onclick="selectSegment('${s.id}')">
+            <div class="seg-card-icon">${s.icon}</div>
+            <div class="seg-card-label">${s.label}</div>
+            <div class="seg-card-desc">${s.desc}</div>
+          </div>
+        `).join('')}
+      </div>`;
+    footer.innerHTML = `<span></span><button class="seg-view-all-btn" onclick="closeSegFinder()">View all products</button>`;
+
+  } else if (segStep === 1) {
+    progBar.style.width = '50%';
+    stepLbl.textContent = 'Step 2 of 2 — Your challenge';
+    const seg = segSegments.find(s => s.id === segSegment);
+    body.innerHTML = `
+      <div class="seg-question">${seg.question}</div>
+      <div class="seg-sub">For your <strong>${seg.label}</strong> operation — pick the one that fits best.</div>
+      <div class="seg-priority-cards">
+        ${seg.priorities.map(p => `
+          <div class="seg-priority-card" onclick="selectPriority('${p.id}')">
+            <div class="seg-priority-icon">${p.icon}</div>
+            <div class="seg-priority-text">
+              <div class="seg-priority-label">${p.label}</div>
+              <div class="seg-priority-desc">${p.desc}</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>`;
+    footer.innerHTML = `
+      <button class="seg-back-btn" onclick="segStep=0;renderSegStep()">← Back</button>
+      <button class="seg-view-all-btn" onclick="closeSegFinder()">View all products</button>`;
+
+  } else if (segStep === 2) {
+    progBar.style.width = '100%';
+    stepLbl.textContent = 'Results';
+    const recs     = segRecommendations[segSegment][segPriority];
+    const recProducts = recs.products.slice(0, 4).map(id => products.find(p => p.id === id)).filter(Boolean);
+    const seg      = segSegments.find(s => s.id === segSegment);
+    const priority = seg.priorities.find(p => p.id === segPriority);
+    body.innerHTML = `
+      <div class="seg-question">Recommended for you</div>
+      <div class="seg-sub">${seg.icon} ${seg.label} &nbsp;·&nbsp; ${priority.icon} ${priority.label}</div>
+      <div class="seg-results-grid">
+        ${recProducts.map((p, i) => `
+          <div class="seg-res-card${i === 0 ? ' top-pick' : ''}">
+            <div class="seg-res-top">
+              ${i === 0 ? '<div class="seg-best-badge">⭐ Best Match</div>' : ''}
+              ${p.image ? `<img src="${p.image}" alt="${p.name}" onerror="this.style.display='none'">` : ''}
+            </div>
+            <div class="seg-res-body">
+              <div class="seg-res-brand">${p.brand || ''}</div>
+              <div class="seg-res-name">${p.name}</div>
+              <div class="seg-res-why">${recs.why[p.id] || ''}</div>
+              <div class="seg-res-actions">
+                ${p.marketplaceUrl ? `<a class="seg-mp-btn" href="${p.marketplaceUrl}" target="_blank" rel="noopener">Marketplace</a>` : ''}
+                <button class="seg-select-btn" onclick="segSelectProduct('${p.id}')">+ Compare</button>
+              </div>
+            </div>
+          </div>
+        `).join('')}
+      </div>`;
+    footer.innerHTML = `
+      <button class="seg-back-btn" onclick="segStep=1;renderSegStep()">← Back</button>
+      <div class="seg-footer-right">
+        <button class="seg-restart-btn" onclick="openSegFinder()">↺ Start over</button>
+        <button class="seg-view-all-btn" onclick="closeSegFinder()">View all products</button>
+      </div>`;
+  }
+}
+
+function selectSegment(id) {
+  segSegment = id;
+  segStep = 1;
+  renderSegStep();
+}
+
+function selectPriority(id) {
+  segPriority = id;
+  segStep = 2;
+  renderSegStep();
+}
+
+function segSelectProduct(id) {
+  closeSegFinder();
+  if (!selectedIds.includes(id)) {
+    selectedIds.push(id);
+    renderCards();
+    updateCompareBar();
+  }
+  setTimeout(() => {
+    const card = document.querySelector(`[data-id="${id}"]`);
+    if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 350);
+}
+
 </script>
 
 <!-- Contact Form Modal -->
-<div class="contact-overlay" id="contactOverlay">
+<div class="contact-overlay" id="contactOverlay" onclick="if(event.target===this)closeContactForm()">
   <div class="contact-modal">
     <div class="contact-header">
       <h3>Contact a Geotab Representative</h3>
@@ -2050,6 +2741,40 @@ document.getElementById('contactOverlay').addEventListener('click', function(e) 
       <p>Your inquiry has been sent to our Marketplace team. A representative will be in touch shortly.</p>
       <button class="contact-done-btn" onclick="closeContactForm()">Done</button>
     </div>
+  </div>
+</div>
+
+<!-- Help Me Choose Quiz -->
+<div class="quiz-overlay" id="quizOverlay" onclick="if(event.target===this)closeQuiz()">
+  <div class="quiz-modal">
+    <div class="quiz-head">
+      <span class="quiz-head-label">✦ Help Me Choose</span>
+      <button class="quiz-close-x" onclick="closeQuiz()">&times;</button>
+    </div>
+    <div class="quiz-prog-wrap">
+      <div class="quiz-prog-track"><div class="quiz-prog-bar" id="quizProgBar" style="width:0%"></div></div>
+    </div>
+    <div class="quiz-step-lbl" id="quizStepLbl"></div>
+    <div class="quiz-body" id="quizBody"></div>
+  </div>
+</div>
+
+<!-- Find by Segment Modal -->
+<div class="seg-overlay" id="segOverlay" onclick="if(event.target===this)closeSegFinder()">
+  <div class="seg-modal">
+    <div class="seg-head">
+      <div class="seg-head-left">
+        <div class="seg-head-eyebrow">Asset Tracker Selector</div>
+        <div class="seg-head-title">Find the Right Tracker</div>
+      </div>
+      <button class="seg-close-x" onclick="closeSegFinder()">&times;</button>
+    </div>
+    <div class="seg-prog-wrap">
+      <div class="seg-prog-track"><div class="seg-prog-bar" id="segProgBar" style="width:0%"></div></div>
+    </div>
+    <div class="seg-step-lbl" id="segStepLbl"></div>
+    <div class="seg-body" id="segBody"></div>
+    <div class="seg-footer" id="segFooter"></div>
   </div>
 </div>
 
