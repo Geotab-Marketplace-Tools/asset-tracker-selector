@@ -210,6 +210,17 @@
   .mp-link:hover { color: var(--geotab-dark); }
   .mp-link svg { flex-shrink: 0; }
 
+  /* ── Regional availability tag ── */
+  .region-row { display: flex; align-items: center; gap: 6px; margin-top: 9px; flex-wrap: wrap; }
+  .region-tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 11px; font-weight: 600; padding: 2px 7px;
+    border-radius: 4px; line-height: 1.5; white-space: nowrap;
+  }
+  .region-global  { background: #EEF2FF; color: #3730A3; }
+  .region-northam { background: #F0FDF4; color: #166534; }
+  .region-usa     { background: #FEF2F2; color: #991B1B; }
+
   /* ── Help Me Choose Quiz ── */
   .controls-divider { width: 1px; height: 24px; background: var(--gray-200); flex-shrink: 0; }
   .quiz-trigger-btn {
@@ -2014,6 +2025,24 @@ let activeFilter = "all";
 let compareSlots = [null, null, null]; // 3 slots minimum, up to 4
 
 // ── RENDER CARDS ──
+function getRegionTag(regions) {
+  if (!regions) return '';
+  const r = regions.toLowerCase();
+  const isGlobal = (r.includes('global') && !r.includes('global rollout')) ||
+    r.includes('europe') || r.includes('uk') ||
+    r.includes('africa') || r.includes('asia') || r.includes('australia') ||
+    r.includes('middle east') || /\d{2,}\s*(?:countries|regions)/.test(r);
+  if (isGlobal)
+    return '<div class="region-row"><span class="region-tag region-global">🌍 Global</span></div>';
+  if (r.includes('usa') && r.includes('canada'))
+    return '<div class="region-row"><span class="region-tag region-northam">🇺🇸🇨🇦 USA & Canada</span></div>';
+  if (r.includes('usa'))
+    return '<div class="region-row"><span class="region-tag region-usa">🇺🇸 USA</span></div>';
+  if (r.includes('canada'))
+    return '<div class="region-row"><span class="region-tag region-northam">🇨🇦 Canada</span></div>';
+  return '';
+}
+
 function renderCards() {
   const grids = { gps: [], solar: [], satellite: [], ble: [] };
   products.forEach(p => {
@@ -2043,6 +2072,7 @@ function renderCards() {
         <div class="quick-specs">
           ${p.pills.map((pill, i) => `<span class="spec-pill ${p.pillClasses[i] || ''}">${pill}</span>`).join('')}
         </div>
+        ${getRegionTag(p.regions)}
         ${p.marketplaceUrl ? `<a class="mp-link" href="${p.marketplaceUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">
           <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
           View on Marketplace
