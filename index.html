@@ -487,41 +487,23 @@
   .spec-pill.orange { background: #FEF3C7; color: #92400E; }
   /* ── Spec-pill tooltips ── */
   .spec-pill[data-tooltip] { cursor: help; }
-  .spec-pill[data-tooltip]::before,
-  .spec-pill[data-tooltip]::after {
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.18s;
-    position: absolute;
-    z-index: 9999;
-  }
-  .spec-pill[data-tooltip]::before {
-    content: attr(data-tooltip);
-    bottom: calc(100% + 7px);
-    left: 50%;
-    transform: translateX(-50%);
+  #pill-tooltip {
+    display: none;
+    position: fixed;
+    z-index: 99999;
     background: #1e293b;
     color: #f8fafc;
-    font-size: 11.5px;
+    font-size: 12px;
     font-weight: 400;
-    line-height: 1.45;
-    padding: 7px 10px;
+    line-height: 1.5;
+    padding: 7px 11px;
     border-radius: 7px;
-    width: 210px;
+    max-width: 230px;
     white-space: normal;
-    text-align: left;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    pointer-events: none;
+    font-family: inherit;
   }
-  .spec-pill[data-tooltip]::after {
-    content: '';
-    bottom: calc(100% + 2px);
-    left: 50%;
-    transform: translateX(-50%);
-    border: 5px solid transparent;
-    border-top-color: #1e293b;
-  }
-  .spec-pill[data-tooltip]:hover::before,
-  .spec-pill[data-tooltip]:hover::after { opacity: 1; }
   .check-indicator {
     width: 22px;
     height: 22px;
@@ -2141,9 +2123,33 @@ const SPEC_TOOLTIPS = {
   'Thatcham S7':      'UK insurance-approved GPS tracker certification. Required by some UK fleet insurance policies.',
 };
 
+function showPillTooltip(el) {
+  const text = el.getAttribute('data-tooltip');
+  if (!text) return;
+  const tt = document.getElementById('pill-tooltip');
+  tt.textContent = text;
+  tt.style.display = 'block';
+  const r = el.getBoundingClientRect();
+  const tw = tt.offsetWidth;
+  const th = tt.offsetHeight;
+  let left = r.left + r.width / 2 - tw / 2;
+  left = Math.max(8, Math.min(left, window.innerWidth - tw - 8));
+  let top = r.top - th - 8;
+  if (top < 8) top = r.bottom + 8;
+  tt.style.left = left + 'px';
+  tt.style.top = top + 'px';
+}
+function hidePillTooltip() {
+  const tt = document.getElementById('pill-tooltip');
+  if (tt) tt.style.display = 'none';
+}
+
 function pillHtml(pill, cls) {
   const tt = SPEC_TOOLTIPS[pill];
-  return `<span class="spec-pill ${cls}"${tt ? ` data-tooltip="${tt}"` : ''}>${pill}</span>`;
+  if (tt) {
+    return `<span class="spec-pill ${cls}" data-tooltip="${tt}" onmouseenter="showPillTooltip(this)" onmouseleave="hidePillTooltip()">${pill}</span>`;
+  }
+  return `<span class="spec-pill ${cls}">${pill}</span>`;
 }
 
 function renderCards() {
@@ -2914,6 +2920,8 @@ function segSelectProduct(id) {
     <div class="seg-footer" id="segFooter"></div>
   </div>
 </div>
+
+<div id="pill-tooltip"></div>
 
 </body>
 </html>
