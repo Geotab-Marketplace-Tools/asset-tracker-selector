@@ -123,6 +123,30 @@
     color: #fff;
     border-color: var(--geotab-blue);
   }
+  .region-select {
+    padding: 6px 30px 6px 11px;
+    border: 1px solid var(--gray-300);
+    border-radius: 20px;
+    background: #fff;
+    font-size: 13px;
+    color: var(--gray-600);
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    font-family: inherit;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 9px center;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .region-select:hover { border-color: var(--geotab-accent); color: var(--geotab-accent); }
+  .region-select:focus { outline: none; border-color: var(--geotab-accent); }
+  .region-select.active {
+    border-color: var(--geotab-blue);
+    color: var(--geotab-blue);
+    background-color: #EFF6FF;
+    font-weight: 600;
+  }
 
   /* ── Product Grid ── */
   .main-container { max-width: 1400px; margin: 0 auto; padding: 24px; }
@@ -1009,6 +1033,13 @@
     <button class="filter-btn" data-filter="compact">Compact</button>
     <button class="filter-btn" data-filter="indoor">Indoor/Outdoor</button>
   </div>
+  <div class="controls-divider"></div>
+  <label for="regionSelect">Region:</label>
+  <select id="regionSelect" class="region-select" onchange="setRegion(this.value)">
+    <option value="all">🌍 All Regions</option>
+    <option value="northam">🇺🇸🇨🇦 USA &amp; Canada</option>
+    <option value="eu">🇪🇺 Europe &amp; UK</option>
+  </select>
   <div class="controls-divider"></div>
   <button class="quiz-trigger-btn" onclick="openQuiz()">
     <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3" stroke-linecap="round"/><circle cx="12" cy="17" r=".5" fill="currentColor"/></svg>
@@ -2531,6 +2562,7 @@ const specRows = [
 // ── STATE ──
 let selectedIds = [];
 let activeFilter = "all";
+let activeRegion  = "all";
 let compareSlots = [null, null, null]; // 3 slots minimum, up to 4
 
 // ── RENDER CARDS ──
@@ -2641,8 +2673,13 @@ function renderCards() {
     const gridEl = document.getElementById(cat === "satellite" ? "satGrid" : cat + "Grid");
     const countEl = document.getElementById(cat === "satellite" ? "satCount" : cat + "Count");
     const filtered = grids[cat].filter(p => {
-      if (activeFilter === "all") return true;
-      return p.tags.includes(activeFilter);
+      if (activeFilter !== "all" && !p.tags.includes(activeFilter)) return false;
+      if (activeRegion !== "all") {
+        const r = (p.regions || '').toLowerCase();
+        if (activeRegion === 'northam') return r.includes('united states') || r.includes('canada');
+        if (activeRegion === 'eu')      return r.includes('europe') || r.includes('uk');
+      }
+      return true;
     });
     countEl.textContent = filtered.length;
     gridEl.innerHTML = filtered.map(p => `
@@ -2719,6 +2756,12 @@ document.getElementById('filterGroup').addEventListener('click', e => {
   activeFilter = e.target.dataset.filter;
   renderCards();
 });
+
+function setRegion(val) {
+  activeRegion = val;
+  document.getElementById('regionSelect').classList.toggle('active', val !== 'all');
+  renderCards();
+}
 
 // ── COMPARISON MODAL ──
 function openComparison() {
