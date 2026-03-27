@@ -218,6 +218,7 @@
     border-radius: 4px; line-height: 1.5; white-space: nowrap;
   }
   .region-global  { background: #EEF2FF; color: #3730A3; }
+  .region-eu      { background: #DBEAFE; color: #1E40AF; }
   .region-northam { background: #F0FDF4; color: #166534; }
   .region-usa     { background: #FEF2F2; color: #991B1B; }
 
@@ -2495,15 +2496,18 @@ let compareSlots = [null, null, null]; // 3 slots minimum, up to 4
 function getRegionTag(regions) {
   if (!regions) return '';
   const r = regions.toLowerCase();
-  // Any territory beyond USA/Canada = Global
-  const isGlobal = r.includes('europe') || r.includes('uk') || r.includes('africa') ||
-    r.includes('asia') || r.includes('australia') || r.includes('middle east') ||
-    r.includes('mexico') || r.includes('central') || r.includes('south america') ||
-    r.includes('global');
-  if (isGlobal)
-    return '<div class="region-row"><span class="region-tag region-global">🌍 Global</span></div>';
+  const hasEU = r.includes('europe') || r.includes('uk');
   const hasUS = r.includes('united states');
   const hasCA = r.includes('canada');
+  const hasOther = r.includes('africa') || r.includes('asia') || r.includes('australia') ||
+    r.includes('middle east') || r.includes('mexico') || r.includes('central') ||
+    r.includes('south america') || r.includes('global');
+  // Europe/UK only — no USA, Canada, or other regions
+  if (hasEU && !hasUS && !hasCA && !hasOther)
+    return '<div class="region-row"><span class="region-tag region-eu">🇪🇺 Europe &amp; UK</span></div>';
+  // Any territory beyond USA/Canada = Global
+  if (hasEU || hasOther)
+    return '<div class="region-row"><span class="region-tag region-global">🌍 Global</span></div>';
   if (hasUS && hasCA)
     return '<div class="region-row"><span class="region-tag region-northam">🇺🇸🇨🇦 USA & Canada</span></div>';
   if (hasUS)
