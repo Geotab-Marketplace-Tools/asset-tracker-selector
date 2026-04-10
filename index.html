@@ -3013,14 +3013,34 @@ const quizQuestions = [
   }
 ];
 
+// ── REGION DATA ──────────────────────────────────────────────────────────────
+const REGION_OPTIONS = [
+  { key: 'north-america',  label: 'North America',           icon: '🌎', desc: 'Canada & United States',             matches: ['Canada', 'United States'] },
+  { key: 'europe',         label: 'Europe',                  icon: '🌍', desc: 'Europe & United Kingdom',            matches: ['Europe', 'UK'] },
+  { key: 'australia-nz',   label: 'Australia & New Zealand', icon: '🦘', desc: 'ANZ region',                         matches: ['Australia & New Zealand'] },
+  { key: 'latin-america',  label: 'Latin America',           icon: '🌎', desc: 'Central & South America, Mexico',    matches: ['Central & South America', 'Mexico'] },
+  { key: 'asia',           label: 'Asia',                    icon: '🌏', desc: 'Asia-Pacific (excl. ANZ)',            matches: ['Asia'] },
+  { key: 'africa-me',      label: 'Africa & Middle East',    icon: '🌍', desc: 'Africa and Middle East',             matches: ['Africa', 'Middle East'] },
+];
+
+function productInRegion(product, regionKey) {
+  if (!regionKey) return true;
+  const opt = REGION_OPTIONS.find(r => r.key === regionKey);
+  if (!opt) return true;
+  const productRegions = (product.regions || '').split(',').map(r => r.trim());
+  return opt.matches.some(r => productRegions.includes(r));
+}
+
 let quizAnswers = [];
 let quizStep = 0;
+let quizRegion = null;
 
 function openQuiz() {
   quizAnswers = [];
   quizStep = 0;
+  quizRegion = null;
   document.getElementById('quizOverlay').classList.add('open');
-  renderQuizStep();
+  renderQuizRegionStep();
 }
 
 function closeQuiz() {
@@ -3028,12 +3048,39 @@ function closeQuiz() {
 }
 
 function updateQuizProgress() {
-  const pct = Math.round((quizStep / quizQuestions.length) * 100);
+  const totalSteps = quizQuestions.length + 1; // +1 for region step
+  const currentStep = quizStep + 1; // questions are 0-indexed; region was step 0
+  const pct = Math.round((currentStep / totalSteps) * 100);
   document.getElementById('quizProgBar').style.width = pct + '%';
   document.getElementById('quizStepLbl').textContent =
     quizStep < quizQuestions.length
-      ? `Step ${quizStep + 1} of ${quizQuestions.length}`
+      ? `Step ${currentStep + 1} of ${totalSteps}`
       : 'Your results';
+}
+
+function renderQuizRegionStep() {
+  document.getElementById('quizProgBar').style.width = '0%';
+  document.getElementById('quizStepLbl').textContent = `Step 1 of ${quizQuestions.length + 1} — Your region`;
+  document.getElementById('quizBody').innerHTML = `
+    <h2 class="quiz-q">Where are you located?</h2>
+    <div class="quiz-opts">
+      ${REGION_OPTIONS.map((r, i) => `
+        <button class="quiz-opt" onclick="selectQuizRegion(${i})">
+          <span class="quiz-opt-icon">${r.icon}</span>
+          <span class="quiz-opt-lbl">${r.label}<br><small style="font-weight:400;color:var(--gray-400)">${r.desc}</small></span>
+        </button>`).join('')}
+    </div>
+  `;
+}
+
+function selectQuizRegion(i) {
+  const btns = document.querySelectorAll('.quiz-opt');
+  if (btns[i]) btns[i].classList.add('chosen');
+  quizRegion = REGION_OPTIONS[i].key;
+  setTimeout(() => {
+    quizStep = 0;
+    renderQuizStep();
+  }, 220);
 }
 
 function renderQuizStep() {
@@ -3048,7 +3095,7 @@ function renderQuizStep() {
           <span class="quiz-opt-lbl">${opt.label}</span>
         </button>`).join('')}
     </div>
-    ${quizStep > 0 ? `<button class="quiz-back" onclick="quizGoBack()">← Back</button>` : ''}
+    <button class="quiz-back" onclick="${quizStep === 0 ? 'renderQuizRegionStep()' : 'quizGoBack()'}">← Back</button>
   `;
 }
 
@@ -3086,6 +3133,7 @@ function calcQuizResults() {
   });
 
   return products
+    .filter(p => productInRegion(p, quizRegion))
     .map(p => ({ ...p, score: scores[p.id] }))
     .filter(p => p.score > 0)
     .sort((a, b) => b.score - a.score)
@@ -3112,11 +3160,13 @@ function renderQuizResults() {
     </div>`).join('')
   : '<p class="quiz-no-results">No exact matches found — try adjusting your answers.</p>';
 
+  const regionOpt = REGION_OPTIONS.find(r => r.key === quizRegion);
+  const regionNote = regionOpt ? ` · ${regionOpt.icon} ${regionOpt.label}` : '';
   document.getElementById('quizStepLbl').textContent = 'Your results';
   document.getElementById('quizBody').innerHTML = `
     <div class="quiz-res-header">
       <svg width="28" height="28" fill="none" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="#2E8B57" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div><h2>Your top matches</h2><p>Based on your answers — ${results.length} product${results.length !== 1 ? 's' : ''} recommended</p></div>
+      <div><h2>Your top matches</h2><p>Based on your answers — ${results.length} product${results.length !== 1 ? 's' : ''} recommended${regionNote}</p></div>
     </div>
     ${cardsHtml}
     <div class="quiz-footer">
@@ -3143,9 +3193,10 @@ function quizSelectProduct(id) {
 }
 
 // ── Find by Segment ──────────────────────────────────────────────────────────
-let segStep = 0;
+let segStep = -1;
 let segSegment = null;
 let segPriority = null;
+let segRegion = null;
 
 // Each segment has its own plain-language pain-point question and four options.
 // Options are written from the customer's perspective — no technical jargon.
@@ -3269,7 +3320,7 @@ const segRecommendations = {
 };
 
 function openSegFinder() {
-  segStep = 0; segSegment = null; segPriority = null;
+  segStep = -1; segSegment = null; segPriority = null; segRegion = null;
   document.getElementById('segOverlay').classList.add('open');
   renderSegStep();
 }
@@ -3284,9 +3335,26 @@ function renderSegStep() {
   const body    = document.getElementById('segBody');
   const footer  = document.getElementById('segFooter');
 
-  if (segStep === 0) {
+  if (segStep === -1) {
     progBar.style.width = '0%';
-    stepLbl.textContent = 'Step 1 of 2 — Fleet segment';
+    stepLbl.textContent = 'Step 1 of 3 — Your region';
+    body.innerHTML = `
+      <div class="seg-question">Where are you located?</div>
+      <div class="seg-sub">We'll only show products available in your region.</div>
+      <div class="seg-cards">
+        ${REGION_OPTIONS.map((r, i) => `
+          <div class="seg-card" onclick="selectSegRegion(${i})">
+            <div class="seg-card-icon">${r.icon}</div>
+            <div class="seg-card-label">${r.label}</div>
+            <div class="seg-card-desc">${r.desc}</div>
+          </div>
+        `).join('')}
+      </div>`;
+    footer.innerHTML = `<span></span><button class="seg-view-all-btn" onclick="closeSegFinder()">View all products</button>`;
+
+  } else if (segStep === 0) {
+    progBar.style.width = '33%';
+    stepLbl.textContent = 'Step 2 of 3 — Fleet segment';
     body.innerHTML = `
       <div class="seg-question">What type of fleet do you operate?</div>
       <div class="seg-sub">Select the segment that best describes your operation.</div>
@@ -3299,11 +3367,13 @@ function renderSegStep() {
           </div>
         `).join('')}
       </div>`;
-    footer.innerHTML = `<span></span><button class="seg-view-all-btn" onclick="closeSegFinder()">View all products</button>`;
+    footer.innerHTML = `
+      <button class="seg-back-btn" onclick="segStep=-1;renderSegStep()">← Back</button>
+      <button class="seg-view-all-btn" onclick="closeSegFinder()">View all products</button>`;
 
   } else if (segStep === 1) {
-    progBar.style.width = '50%';
-    stepLbl.textContent = 'Step 2 of 2 — Your challenge';
+    progBar.style.width = '66%';
+    stepLbl.textContent = 'Step 3 of 3 — Your challenge';
     const seg = segSegments.find(s => s.id === segSegment);
     body.innerHTML = `
       <div class="seg-question">${seg.question}</div>
@@ -3326,15 +3396,20 @@ function renderSegStep() {
   } else if (segStep === 2) {
     progBar.style.width = '100%';
     stepLbl.textContent = 'Results';
-    const recs     = segRecommendations[segSegment][segPriority];
-    const recProducts = recs.products.slice(0, 4).map(id => products.find(p => p.id === id)).filter(Boolean);
+    const recs = segRecommendations[segSegment][segPriority];
+    const recProducts = recs.products
+      .map(id => products.find(p => p.id === id))
+      .filter(p => p && productInRegion(p, segRegion))
+      .slice(0, 4);
     const seg      = segSegments.find(s => s.id === segSegment);
     const priority = seg.priorities.find(p => p.id === segPriority);
+    const regionOpt = REGION_OPTIONS.find(r => r.key === segRegion);
+    const regionNote = regionOpt ? `&nbsp;·&nbsp; ${regionOpt.icon} ${regionOpt.label}` : '';
     body.innerHTML = `
       <div class="seg-question">Recommended for you</div>
-      <div class="seg-sub">${seg.icon} ${seg.label} &nbsp;·&nbsp; ${priority.icon} ${priority.label}</div>
+      <div class="seg-sub">${seg.icon} ${seg.label} &nbsp;·&nbsp; ${priority.icon} ${priority.label}${regionNote}</div>
       <div class="seg-results-grid">
-        ${recProducts.map((p, i) => `
+        ${recProducts.length ? recProducts.map((p, i) => `
           <div class="seg-res-card${i === 0 ? ' top-pick' : ''}">
             <div class="seg-res-top">
               ${i === 0 ? '<div class="seg-best-badge">⭐ Best Match</div>' : ''}
@@ -3350,7 +3425,7 @@ function renderSegStep() {
               </div>
             </div>
           </div>
-        `).join('')}
+        `).join('') : '<p style="color:var(--gray-500);text-align:center;padding:20px 0">No products available for your region matching this criteria. Try a different region or challenge.</p>'}
       </div>`;
     footer.innerHTML = `
       <button class="seg-back-btn" onclick="segStep=1;renderSegStep()">← Back</button>
@@ -3359,6 +3434,12 @@ function renderSegStep() {
         <button class="seg-view-all-btn" onclick="closeSegFinder()">View all products</button>
       </div>`;
   }
+}
+
+function selectSegRegion(i) {
+  segRegion = REGION_OPTIONS[i].key;
+  segStep = 0;
+  renderSegStep();
 }
 
 function selectSegment(id) {
