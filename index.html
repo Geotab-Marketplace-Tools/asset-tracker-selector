@@ -2997,7 +2997,7 @@ const quizQuestions = [
     question: 'What type of asset are you tracking?',
     options: [
       { label: 'Trailers, containers & chassis', icon: '🚛',
-        matches: ['go-anywhere','oyster3','remora3','solarnet','stealthnet','ct-1000','gt-1220','gt-1230','tt600','tt603','sc-1000','go-anywhere-plus','supertag-pro','supertag-plus','supertag-rechargeable','open-close-sensor'] },
+        matches: ['go-anywhere','oyster3','remora3','solarnet','stealthnet','ct-1000','gt-1220','gt-1230','tt600','tt603','sc-1000','go-anywhere-plus','supertag-pro','supertag-plus','supertag-rechargeable','open-close-sensor','postrack-ptag1-4g','postrack-remora3','postrack-oyster3-4g','postrack-barra-gps','postrack-barra-edge'] },
       { label: 'Construction & heavy equipment', icon: '🏗️',
         matches: ['go-anywhere','magtrack-pro','oyster3','remora3','solarnet','ct-1000','gt-1220','tt600','sc-1000','go-anywhere-plus','g70','barra-edge'] },
       { label: 'Tools, pallets & small cargo', icon: '🔧',
@@ -3012,9 +3012,9 @@ const quizQuestions = [
     question: 'Where does the asset primarily operate?',
     options: [
       { label: 'Outdoors (roads, yards, fields)', icon: '🌤️',
-        matches: ['go-anywhere','go-anywhere-plus','oyster3','remora3','yabby3','magtrack-pro','solarnet','stealthnet','ct-1000','gt-1220','gt-1230','tt600','tt603','sc-1000','g70','bemini','tag-iq-card','tag-iq-industrial','barra-edge'] },
+        matches: ['go-anywhere','go-anywhere-plus','oyster3','remora3','yabby3','magtrack-pro','solarnet','stealthnet','ct-1000','gt-1220','gt-1230','tt600','tt603','sc-1000','g70','bemini','tag-iq-card','tag-iq-industrial','barra-edge','postrack-ptag1-4g','postrack-remora3','postrack-oyster3-4g','postrack-barra-gps','postrack-barra-edge'] },
       { label: 'Indoor & outdoor mixed', icon: '🏭',
-        matches: ['oyster-edge','yabby-edge','barra-edge','supertag-pro','supertag-plus','supertag-rechargeable','bemini','e9-puck','e7-puck','e8-puck','iox-bt','s1-temp','open-close-sensor'] },
+        matches: ['oyster-edge','yabby-edge','barra-edge','supertag-pro','supertag-plus','supertag-rechargeable','bemini','e9-puck','e7-puck','e8-puck','iox-bt','s1-temp','open-close-sensor','postrack-barra-edge'] },
       { label: 'Remote / limited cell signal', icon: '🛰️',
         matches: ['sc-1000','go-anywhere-plus','magtrack-pro'] },
     ]
@@ -3023,11 +3023,11 @@ const quizQuestions = [
     question: 'What is the power situation for the asset?',
     options: [
       { label: 'No power — battery only', icon: '🔋',
-        matches: ['go-anywhere','oyster3','remora3','yabby3','oyster-edge','yabby-edge','barra-edge','stealthnet','bemini','tag-iq-card','tag-iq-industrial','supertag-pro','supertag-plus','supertag-rechargeable','e9-puck','e7-puck','e8-puck','magtrack-pro','s1-temp','open-close-sensor'] },
+        matches: ['go-anywhere','oyster3','remora3','yabby3','oyster-edge','yabby-edge','barra-edge','stealthnet','bemini','tag-iq-card','tag-iq-industrial','supertag-pro','supertag-plus','supertag-rechargeable','e9-puck','e7-puck','e8-puck','magtrack-pro','s1-temp','open-close-sensor','postrack-ptag1-4g','postrack-remora3','postrack-oyster3-4g','postrack-barra-gps','postrack-barra-edge'] },
       { label: 'Solar power preferred', icon: '☀️',
         matches: ['solarnet','ct-1000','gt-1220','gt-1230','tt600','tt603','sc-1000'] },
       { label: 'Wired power available', icon: '⚡',
-        matches: ['g70','go-anywhere-plus','iox-bt'] },
+        matches: ['g70','go-anywhere-plus','iox-bt','ct-1000','gt-1220'] },
     ]
   },
   {
@@ -3167,8 +3167,13 @@ function calcQuizResults() {
     matches.forEach(id => { if (scores[id] !== undefined) scores[id]++; });
   });
 
+  // Power question (Q3, index 2) is a hard filter — a product must appear in
+  // the selected power option's match list to be eligible at all.
+  const powerMatches = quizAnswers.length > 2 ? quizAnswers[2] : null;
+
   return products
     .filter(p => productInRegion(p, quizRegion))
+    .filter(p => !powerMatches || powerMatches.includes(p.id))
     .map(p => ({ ...p, score: scores[p.id] }))
     .filter(p => p.score > 0)
     .sort((a, b) => b.score - a.score)
@@ -3311,10 +3316,10 @@ const segSegments = [
 // Recommendations keyed by segment → pain-point id → { products, why }
 const segRecommendations = {
   'transportation': {
-    'location': { products: ['go-anywhere','remora3','oyster3','tt600'],          why: { 'go-anywhere':'Battery-powered with 3-5 year life — easily hidden on trailers with no wiring needed','remora3':'Rugged magnetic mount that clings to trailers and reports real-time location','oyster3':'Industry-leading battery tracker with precise GPS for unmanned asset tracking','tt600':'Purpose-built solar trailer tracker with automatic arrival and departure alerts' } },
+    'location': { products: ['go-anywhere','ct-1000','postrack-ptag1-4g','magtrack-pro','remora3','oyster3','tt600'], why: { 'go-anywhere':'Battery-powered with 3-5 year life — easily hidden on trailers with no wiring needed','ct-1000':'Solar-powered with ATEX certification — no wiring or battery swaps for European containers, dry trailers, and intermodal assets','postrack-ptag1-4g':'Fully managed European service with 20+ year battery life — SIM, configuration, and shipping included for trailers and rail freight','magtrack-pro':'Multi-network (Cellular + LoRa + Satellite) with Thatcham S7 certification — global coverage including cross-border European routes','remora3':'Rugged magnetic mount that clings to trailers and reports real-time location','oyster3':'Industry-leading battery tracker with precise GPS for unmanned asset tracking','tt600':'Purpose-built solar trailer tracker with automatic arrival and departure alerts' } },
     'theft':    { products: ['stealthnet','magtrack-pro','go-anywhere','remora3'], why: { 'stealthnet':'Covert hardwired GPS designed to survive discovery attempts — the industry standard for theft deterrence','magtrack-pro':'Heavy-duty magnetic mount tracker extremely difficult to remove without tools','go-anywhere':'Battery-powered and easily concealed — no wiring for a thief to trace','remora3':'Strong magnetic attachment with tamper-alert capability on any unauthorized movement' } },
     'remote':   { products: ['go-anywhere-plus','sc-1000','oyster3'],              why: { 'go-anywhere-plus':'Auto-switches between cellular and satellite — no dead zones on cross-country or cross-border routes','sc-1000':'Pure satellite tracker — works anywhere in North America regardless of cellular coverage','oyster3':'Best-in-class cellular GPS for assets on well-covered routes' } },
-    'indoor':   { products: ['supertag-pro','remora3','oyster-edge','supertag-plus'], why: { 'supertag-pro':'BLE tag that pinpoints asset location inside docks, warehouses, and rail yards','remora3':'GPS + BLE combo — tracks outdoors and hands off to BLE gateways inside the facility','oyster-edge':'Hybrid indoor/outdoor tracker that switches seamlessly at facility boundaries','supertag-plus':'Compact BLE tag for cargo, pallets, and equipment inside distribution centers' } },
+    'indoor':   { products: ['supertag-pro','postrack-barra-edge','magtrack-pro','remora3','oyster-edge','supertag-plus'], why: { 'supertag-pro':'BLE tag that pinpoints asset location inside docks, warehouses, and rail yards','postrack-barra-edge':'GNSS + WiFi AP scanning for European yards and warehouses — tracks trailers inside covered areas and across open yards with no extra infrastructure','magtrack-pro':'Multi-network GPS for yard-level visibility across European facilities — works under canopies and in covered yard areas','remora3':'GPS + BLE combo — tracks outdoors and hands off to BLE gateways inside the facility','oyster-edge':'Hybrid indoor/outdoor tracker that switches seamlessly at facility boundaries','supertag-plus':'Compact BLE tag for cargo, pallets, and equipment inside distribution centers' } },
   },
   'field-services': {
     'tools':    { products: ['supertag-pro','e9-puck','supertag-plus','e7-puck'],  why: { 'supertag-pro':'Long-range BLE tag — scan for missing tools from a truck parked in the driveway','e9-puck':'Rugged waterproof BLE puck built for tools that get dropped, rained on, and lost','supertag-plus':'Compact BLE tag small enough for drills, meters, and smaller hand tools','e7-puck':'Ultra-compact BLE tag for small items — fits inside tool pouches or equipment cases' } },
